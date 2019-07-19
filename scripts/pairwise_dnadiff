@@ -1,0 +1,67 @@
+#!/bin/bash
+# Run mummer's dnadiff utility on all pairs of contigs
+# usage: ./pairwise_dnadiff FASTA OUT
+# cmdoret, 20190716
+
+declare -i N_CONTIGS
+declare -i DONE_CONTIGS
+# Split genome into contigs
+GENOME="$1"
+mkdir "$CONTIG_DIR" && cd "$CONTIG_DIR"
+awk '/^>/ {if (seqlen){print seqlen}; printf "%s ",$0 ;seqlen=0;next; } { seqlen += length($0)}END{print seqlen}' "../${GENOME}"
+cd ..
+
+SIM_OUT=$2
+CONTIG_DIR='contigs'
+OUT_DIR=$2
+N_CONTIGS=$(find $CONTIG_DIR/ -type f | wc -l)
+DONE_CONTIGS=0
+NCPU=12
+
+# Create semaphore as a fifo with max capacity NCPU
+open_sem(){
+    mkfifo pipe-$$
+    exec 3<>pipe-$$
+    rm pipe-$$
+    local i=$1
+    for((;i>0;i--)); do
+        printf %s 000 >&3
+    done
+}
+
+# Run process using semaphore for lock
+run_with_lock(){
+    local x
+    read -u 3 -n 3 x && ((0==x)) || exit $x
+    (
+     ( "$@"; )
+    printf '%.3d' $? >&3
+    )&
+}
+
+
+# Run dnadiff (n^2 / 2) - n times (all 1-way pairwise interactions minus self)
+# NCPUs runs in parallel :)
+open_sem $NCPU
+for i in $CONTIG_DIR/* ; do
+  echo -en "Finished $DONE_CONTIGS / $N_CONTIGS contigs\r"
+  for j in $CONTIG_DIR/* ; do
+    # Only run combinations if diff contigs, and not 2-way same contigs
+    if [[ "$i" < "$j" ]]; then
+      # Use combination of contig names as prefix for output files
+      c1=$(basename "$i")
+      c2=$(basename "$j")
+      run_with_lock dnadiff -p "$OUT_DIR/${c1%.fa}_${c2%.fa}" "$i" "$j" 2>/dev/null
+    fi
+  done
+  ((DONE_CONTIGS++))
+done
+
+# Filter variable of interest into table
+# This will generate a tabluar file containing proportion of aligned bases for each pair of contig
+find "$OUT_DIR/" -name "*report" \
+  | xargs grep -H 'AlignedBases' \
+  | awk -F"[() ]*" '{print $1,$3,$5}' \
+  | sed 's/^.*\/\(contig_[0-9]*\)_\(contig_[0-9]*\)[^ ]* \(.*\)/\1 \2 \3/g' \
+  | tr -d '%' \
+  > SIM_OUT
