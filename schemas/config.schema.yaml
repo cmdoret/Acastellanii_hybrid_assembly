@@ -1,0 +1,28 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+
+description: snakemake configuration file
+
+type: object
+
+properties:
+    samples:
+        type: string
+    units:
+        type: string
+    out_dir:
+        type: string
+    tmp_dir:
+        type: string
+    params:
+        type: object
+        properties:
+            bowtie2:
+                type: string
+            racon_wrapper:
+                type: string
+            pilon:
+                type: string
+        required:
+            - bowtie2
+            - racon_wrapper
+            - pilon

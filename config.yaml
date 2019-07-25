@@ -1,0 +1,14 @@
+# Description of samples
+samples  : samples.tsv
+# Description of sequencing units (libraries, resequencing, ...)
+units    : units.tsv
+
+# Default path for generated files
+out_dir  : data/output
+tmp_dir  : data/tmp
+
+# Software default parameters
+params:
+    bowtie2       : "--sensitive-local"
+    racon_wrapper : "--subsample 45000000 100 -u"
+    pilon         : "--diploid"
