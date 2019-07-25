@@ -1,16 +1,15 @@
 
 # Use flye for de-novo long reads assembly
 rule flye_assembly:
-  input:
-    join(TMP, 'reads', '{strain}_ONT_polished.fa'),
+  input: join(TMP, 'reads', '{strain}_long_reads_polished.fa'),
   output: assembly = join(OUT, 'assemblies', '01_Ac_{strain}_flye.fa')
   params:
-    flye_dir = dir(join(TMP, '{strain}', 'flye'))
+    flye_dir = directory(join(TMP, '{strain}', 'flye'))
   threads: 12
   singularity: "docker://quay.io/biocontainers/flye:latest"
   shell:
     """
-    flye --nano-corrected {input.reads} \
+    flye --nano-corrected {input} \
          --threads {threads} \
          --iterations 3 \
          -o {params.flye_dir} \

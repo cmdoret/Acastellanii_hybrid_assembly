@@ -4,18 +4,17 @@
 from os.path import join
 from snakemake.utils import validate
 import pandas as pd
-
+import numpy as np
 
 ## CONFIGURATION FILES ##
-
 
 configfile: "config.yaml"
 validate(config, schema="schemas/config.schema.yaml")
 
-samples = pd.read_table(config["samples"]).set_index("strain", drop=False)
+samples = pd.read_csv(config["samples"], sep='\t').set_index("strain", drop=False)
 validate(samples, schema="schemas/samples.schema.yaml")
 
-units = pd.read_table(config["units"], dtype=str).set_index(["strain", "unit"], drop=False)
+units = pd.read_csv(config["units"], sep='\t', dtype=str).set_index(["strain", "unit"], drop=False)
 # Enforces str in index
 units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])
 
@@ -24,15 +23,22 @@ OUT = config['out_dir']
 
 ## WILDCARD CONSTRAINTS
 wildcard_constraints:
-  sample="|".join(samples.index)
+  strain="|".join(samples.index),
+  libtype="|".join(np.unique(units.libtype))
 
 ## Helper functions
 
-def get_fastqs(wildcards, libtype="shotgun"):
-    """Get fastq files of a particular library type from unit sheet"""
-    fqs = units.loc[(units.strain == wildcards.strain) & (units.libtype == libtype), ["fq1", "fq2"]].dropna()
-    if len(fqs.values) == 2:
-        return {"r1": fqs.fq1.values, "r2": fqs.fq2.values}
+
+def get_fastqs(wildcards):
+    """
+    Get fastq files (units) of a particular library type of one sample 
+    from the unit sheet
+    """
+    fqs = units.loc[(units.strain == wildcards.strain) & (units.libtype == wildcards.libtype), ["fq1", "fq2"]]
+    fq1 = fqs.fq1.dropna()
+    fq2 = fqs.fq2.dropna()
+    if len(fq2) == len(fq1):
+        return {"r1": fqs.fq1, "r2": fqs.fq2}
     return {"r1": fqs.fq1.values}
 
 ## PIPELINE
@@ -46,4 +52,3 @@ include: "rules/05_pilon_polishing2.smk"
 
 rule all:
     input: expand(join(OUT, 'assemblies', '06_Ac_{strain}_pilon2.fa'), strain=samples['strain'])
-
