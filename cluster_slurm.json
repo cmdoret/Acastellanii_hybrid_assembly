@@ -2,16 +2,21 @@
     "__default__" :
     {
         "queue"  : "normal",
-        "ncpus"  : 4,
-        "mem" : 16000,
+        "ncpus"  : 12,
+        "mem" : "16G",
         "ntasks": 1,
         "name"   : "Ac_assembly.{rule}.{wildcards}",
         "output" : "logs/cluster/{rule}.{wildcards}.out",
         "error"  : "logs/cluster/{rule}.{wildcards}.err"
     },
 
-    "pilon" :
+    "long_reads_correction":
     {
-        "mem": 256000
-    }
+        "mem": "128G",
+    },
+    "flye_assembly":
+    {
+        "mem": "64G",
+    },
+    "
 }
