@@ -2,8 +2,8 @@
 #Align shotgun reads to the scaffolded assembly
 rule align_shotgun_3c_assembly:
   input:
-    r1 = join(TMP, "reads", "{strain}_shotgun.end1.fq"),
-    r2 = join(TMP, "reads", "{strain}_shotgun.end1.fq"),
+    r1 = join(TMP, "reads", "{strain}_shotgun.end1.fq.gz"),
+    r2 = join(TMP, "reads", "{strain}_shotgun.end1.fq.gz"),
     assembly = join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa')
   output: temp(join(TMP, "alignments", "05_Ac_{strain}_instagraal.sam"))
   params:

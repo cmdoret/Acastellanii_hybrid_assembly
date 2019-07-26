@@ -3,8 +3,8 @@
 rule combine_units:
   input: unpack(get_fastqs)
   output:
-    r1 = join(TMP, "reads", "{strain}_{libtype}.end1.fq"),
-    r2 = join(TMP, "reads", "{strain}_{libtype}.end2.fq")
+    r1 = join(TMP, "reads", "{strain}_{libtype}.end1.fq.gz"),
+    r2 = join(TMP, "reads", "{strain}_{libtype}.end2.fq.gz")
   run:
     print(len(input))
     print(input[:])
@@ -17,7 +17,7 @@ rule combine_units:
 # convert fastq reads to fasta for correction
 rule fastq_to_fasta_ONT:
   input: 
-    r1 = join(TMP, "reads", "{strain}_long_reads.end1.fq")
+    r1 = join(TMP, "reads", "{strain}_long_reads.end1.fq.gz")
   output: join(TMP, 'reads', '{strain}_long_reads.fa')
   singularity: "docker://cmdoret/seqtk:1.3"
   shell:

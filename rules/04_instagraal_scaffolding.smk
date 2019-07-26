@@ -2,8 +2,8 @@
 # Generate Hi-C matrix from raw reads
 rule hicstuff_hic_processing:
     input:
-      r1 = join(TMP, "reads", "{strain}_Hi-C.end1.fq"),
-      r2 = join(TMP, "reads", "{strain}_Hi-C.end1.fq"),
+      r1 = join(TMP, "reads", "{strain}_Hi-C.end1.fq.gz"),
+      r2 = join(TMP, "reads", "{strain}_Hi-C.end1.fq.gz"),
       assembly = join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa')
     output: directory(join(TMP, "hicstuff", "{strain}"))
     threads: 12
