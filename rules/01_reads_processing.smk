@@ -19,7 +19,7 @@ rule fastq_to_fasta_ONT:
   input: 
     r1 = join(TMP, "reads", "{strain}_long_reads.end1.fq")
   output: join(TMP, 'reads', '{strain}_long_reads.fa')
-  singularity: "docker://quay.io/biocontainers/seqtk:1.3--ha92aebf_0"
+  singularity: "docker://cmdoret/seqtk:1.3"
   shell:
     """
     seqtk seq -a {input.r1} > {output}
@@ -30,6 +30,16 @@ rule fastq_to_fasta_ONT:
 rule long_reads_correction:
   input: join(TMP, 'reads', '{strain}_long_reads.fa')
   output: join(TMP, 'reads', '{strain}_long_reads_polished.fa')
-  singularity: "docker://cmdoret/consent"
-  shell: "CONSENT-correct --in {input} --out {output} --type ONT"
+  params:
+    tmp = join(TMP, "CONSENT")
+  threads: 12
+  singularity: "docker://cmdoret/consent:latest"
+  shell:
+    """
+    /app/CONSENT-correct --in {input} \
+                    --tmpdir {params.tmp} \
+                    --out {output} \
+                    --type ONT \
+                    --nproc {threads}
+"""
 

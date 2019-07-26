@@ -4,8 +4,8 @@ samples  : samples.tsv
 units    : units.tsv
 
 # Default path for generated files
-out_dir  : data/output
-tmp_dir  : data/tmp
+out_dir  : /data/legionella/output/snakemake/out
+tmp_dir  : /data/tmp/legionella/output/snakemake/tmp
 
 # Software default parameters
 params:

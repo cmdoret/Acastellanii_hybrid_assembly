@@ -6,7 +6,7 @@ rule flye_assembly:
   params:
     flye_dir = directory(join(TMP, '{strain}', 'flye'))
   threads: 12
-  singularity: "docker://quay.io/biocontainers/flye:latest"
+  singularity: "docker://cmdoret/flye:2.3.6"
   shell:
     """
     flye --nano-corrected {input} \

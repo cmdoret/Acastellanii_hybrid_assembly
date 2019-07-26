@@ -9,6 +9,7 @@ rule hicstuff_hic_processing:
     threads: 12
     params:
       enzyme = "DpnII"
+    singularity: "docker://koszullab/hicstuff:latest"
     shell:
       """
       hicstuff pipeline -t {threads} \
