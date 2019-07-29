@@ -11,7 +11,7 @@ rule align_shotgun_3c_assembly:
     bt2_preset = config['params']['bowtie2']
   singularity: "docker://cmdoret/bowtie2:2.3.4.1"
   threads: 12
-  resources: mem="32G"
+  resources: mem=32000
   shell:
     """
     bowtie2-build {input.assembly} {params.bt2_index}
@@ -34,7 +34,7 @@ rule post_hic_pilon_polishing:
     pilon_outdir = temp(join(TMP, "pilon", "05_Ac_{strain}_instagraal")),
   singularity: "docker://cmdoret/pilon:1.22"
   threads: 12
-  resources: mem="256G"
+  resources: mem=256000
   shell:
     """
     pilon --genome {input.assembly} \

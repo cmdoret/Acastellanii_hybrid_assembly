@@ -7,7 +7,7 @@ rule hicstuff_hic_processing:
       assembly = join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa')
     output: directory(join(TMP, "hicstuff", "{strain}"))
     threads: 12
-    resources: mem="32G"
+    resources: mem=32000
     params:
       enzyme = "DpnII"
     singularity: "docker://koszullab/hicstuff:latest"

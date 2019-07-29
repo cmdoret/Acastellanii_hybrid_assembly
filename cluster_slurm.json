@@ -1,9 +1,9 @@
 {
     "__default__" :
     {
-        "queue"  : "normal",
+        "queue"  : "fast",
         "ncpus"  : 12,
-        "mem" : "16G",
+        "mem" : 16000,
         "ntasks": 1,
         "name"   : "Ac_assembly.{rule}.{wildcards}",
         "output" : "logs/cluster/{rule}.{wildcards}.out",
@@ -12,11 +12,10 @@
 
     "long_reads_correction":
     {
-        "mem": "128G",
+        "mem": 128000,
     },
     "flye_assembly":
     {
-        "mem": "64G",
-    },
-    "
+        "mem": 64000,
+    }
 }
