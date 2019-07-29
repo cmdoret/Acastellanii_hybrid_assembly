@@ -40,6 +40,5 @@ rule long_reads_correction:
                     --tmpdir {params.tmp} \
                     --out {output} \
                     --type ONT \
-                    --nproc {threads}
-"""
-
+                    --nproc 4
+    """
