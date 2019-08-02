@@ -3,20 +3,20 @@
 rule hicstuff_hic_processing:
     input:
       r1 = join(TMP, "reads", "{strain}_Hi-C.end1.fq.gz"),
-      r2 = join(TMP, "reads", "{strain}_Hi-C.end1.fq.gz"),
       assembly = join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa')
     output: directory(join(TMP, "hicstuff", "{strain}"))
     threads: 12
     resources: mem=32000
     params:
-      enzyme = "DpnII"
+      enzyme = "DpnII",
+      r2 = join(TMP, "reads", "{strain}_Hi-C.end2.fq.gz"),
     singularity: "docker://koszullab/hicstuff:latest"
     shell:
       """
       hicstuff pipeline -t {threads} \
                         -e {params.enzyme} \
                         -g {input.assembly} \
-                        {input.r1} {input.r2} \
+                        {input.r1} {params.r2} \
                         -o {output}
       """
 

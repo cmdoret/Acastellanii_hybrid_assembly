@@ -6,11 +6,9 @@ rule combine_units:
     r1 = join(TMP, "reads", "{strain}_{libtype}.end1.fq.gz"),
     r2 = join(TMP, "reads", "{strain}_{libtype}.end2.fq.gz")
   run:
-    print(len(input))
-    print(input[:])
-    shell("cat {i1} > {o1}".format(i1=input[0], o1=output['r1']))
-    if len(input) == 2:
-      shell("cat {i2} > {o2}".format(i2=input[1], o2=output['r2']))
+    shell("cat {i1} > {o1}".format(i1=input['r1'], o1=output['r1']))
+    if len(input.keys()) == 2:
+      shell("cat {i2} > {o2}".format(i2=input['r2'], o2=output['r2']))
     else:
         shell("touch {o2}".format(o2=output['r2']))
 
@@ -29,7 +27,7 @@ rule fastq_to_fasta_ONT:
 # Use CONSENT to correct ONT reads
 rule long_reads_correction:
   input: join(TMP, 'reads', '{strain}_long_reads.fa')
-  output: join(TMP, 'reads', '{strain}_long_reads_polished.fa')
+  output: join(TMP, 'reads', '{strain}_long_reads_corrected.fa')
   params:
     tmp = join(TMP, "CONSENT")
   threads: 12
@@ -40,5 +38,5 @@ rule long_reads_correction:
                     --tmpdir {params.tmp} \
                     --out {output} \
                     --type ONT \
-                    --nproc 4
+                    --nproc {threads}
     """
