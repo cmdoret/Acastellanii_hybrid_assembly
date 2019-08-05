@@ -18,6 +18,7 @@ units = pd.read_csv(config["units"], sep='\t', dtype=str).set_index(["strain", "
 # Enforces str in index
 units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])
 
+CPUS = config['n_cpus']
 TMP = config['tmp_dir']
 OUT = config['out_dir']
 

@@ -10,7 +10,7 @@ rule align_shotgun_3c_assembly:
     bt2_index = temp(join(TMP, "05_Ac_{strain}_instagraal")),
     bt2_preset = config['params']['bowtie2']
   singularity: "docker://cmdoret/bowtie2:2.3.4.1"
-  threads: 12
+  threads: CPUS
   resources: mem=32000
   shell:
     """
@@ -33,7 +33,7 @@ rule post_hic_pilon_polishing:
     pilon_preset = config['params']['pilon'],
     pilon_outdir = temp(join(TMP, "pilon", "05_Ac_{strain}_instagraal")),
   singularity: "docker://cmdoret/pilon:1.22"
-  threads: 12
+  threads: CPUS
   resources: mem=256000
   shell:
     """

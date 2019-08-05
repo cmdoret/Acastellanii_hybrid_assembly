@@ -10,7 +10,7 @@ rule align_shotgun_ont_assembly:
     bt2_index = temp(join(TMP, "01_Ac_{strain}_flye")),
     bt2_preset = config['params']['bowtie2']
   singularity: "docker://cmdoret/bowtie2:2.3.4.1"
-  threads: 12
+  threads: CPUS
   resources: mem=32000
   shell:
     """
@@ -18,7 +18,7 @@ rule align_shotgun_ont_assembly:
     bowtie2 -x {params.bt2_index} \
             -1 {input.r1} \
             -2 {params.r2} \
-            -S {output.alignment}
+            -S {output} \
             -p {threads} \
             {params.bt2_preset}
     """
@@ -33,7 +33,7 @@ rule pilon_polishing:
     pilon_preset = config['params']['pilon'],
     pilon_outdir = directory(join(TMP, 'pilon', '01_Ac_{strain}_flye'))
   singularity: "docker://cmdoret/pilon:1.22"
-  threads: 12
+  threads: CPUS
   resources: mem=256000
   shell:
     """
@@ -64,7 +64,7 @@ rule align_merged_shotgun_pilon_assembly:
     bt2_index = temp(join(TMP, "01_Ac_{strain}_flye")),
     bt2_preset = config['params']['bowtie2']
   singularity: "docker://cmdoret/bowtie2:2.3.4.1"
-  threads: 12
+  threads: CPUS
   resources: mem=32000
   shell:
     """
@@ -83,7 +83,7 @@ rule racon_polishing:
     illumina = join(TMP, "reads", "{strain}_merged_shotgun.fq.gz"),
     alignment = join(TMP, "alignments", "03_Ac_{strain}_pilon_merged_shotgun.sam")
   output: join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa')
-  threads: 12
+  threads: CPUS
   resources: mem=128000
   singularity: "docker://cmdoret/racon:1.3.2"
   shell: 

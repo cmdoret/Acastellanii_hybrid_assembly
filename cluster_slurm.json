@@ -2,7 +2,7 @@
     "__default__" :
     {
         "queue"  : "normal",
-        "ncpus"  : 12,
+        "ncpus"  : 32,
         "mem" : 16000,
         "ntasks": 1,
         "name"   : "Ac_assembly.{rule}.{wildcards}",

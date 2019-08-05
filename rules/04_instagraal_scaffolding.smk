@@ -5,7 +5,7 @@ rule hicstuff_hic_processing:
       r1 = join(TMP, "reads", "{strain}_Hi-C.end1.fq.gz"),
       assembly = join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa')
     output: directory(join(TMP, "hicstuff", "{strain}"))
-    threads: 12
+    threads: CPUS
     resources: mem=32000
     params:
       enzyme = "DpnII",
