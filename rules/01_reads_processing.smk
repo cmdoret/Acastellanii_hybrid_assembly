@@ -30,7 +30,7 @@ rule long_reads_correction:
   output: join(TMP, 'reads', '{strain}_long_reads_corrected.fa')
   params:
     tmp = join(TMP, "CONSENT")
-  threads: CPUS
+  threads: 5
   singularity: "docker://cmdoret/consent:latest"
   shell:
     """
