@@ -1,7 +1,7 @@
 strain	unit	platform	libtype	fq1	fq2
 C3	1	ILLUMINA	shotgun	fq/C3/shotgun/PM65.end1.fq.gz	fq/C3/shotgun/PM65.end2.fq.gz
 Neff	1	ILLUMINA	shotgun	fq/Neff/shotgun/SRR7769837.end1.fq.gz	fq/Neff/shotgun/SRR7769837.end2.fq.gz
-C3	1	ILLUMINA	Hi-C	fq/C3/hic/AT337.end1.fq.gz	fq/C3/hic/AT337.end2.fq.gz
-Neff	1	ILLUMINA	Hi-C	fq/Neff/hic/AT338.end1.fq.gz	fq/Neff/hic/AT338.end2.fq.gz
+C3	1	ILLUMINA	hic	fq/C3/hic/AT337.end1.fq.gz	fq/C3/hic/AT337.end2.fq.gz
+Neff	1	ILLUMINA	hic	fq/Neff/hic/AT338.end1.fq.gz	fq/Neff/hic/AT338.end2.fq.gz
 C3	1	ONT	long_reads	fq/C3/ONT/CM01.fq.gz
 Neff	1	ONT	long_reads	fq/Neff/ONT/CM02.fq.gz
