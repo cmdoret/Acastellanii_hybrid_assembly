@@ -23,10 +23,21 @@ rule align_shotgun_ont_assembly:
             {params.bt2_preset}
     """
 
+rule index_shotgun_bam_pilon:
+  input: join(TMP, 'alignments', '01_Ac_{strain}_flye.sam')
+  output: join(TMP, 'alignments', '01_Ac_{strain}_flye.bam')
+  singularity: "docker://biocontainers/samtools:latest"
+  threads: CPUS
+  shell:
+    """
+    samtools view -@ {threads} -O BAM -o {output} {input}
+    samtools index -@ {threads} {output}
+    """
+
 # Use pilon for short reads polishing of the long reads assembly
 rule pilon_polishing:
   input:
-    alignment = join(TMP, "alignments", "01_Ac_{strain}_flye.sam"),
+    alignment = join(TMP, "alignments", "01_Ac_{strain}_flye.bam"),
     assembly = join(OUT, 'assemblies', '01_Ac_{strain}_flye.fa')
   output: join(OUT, 'assemblies', '03_Ac_{strain}_pilon.fa')
   params:

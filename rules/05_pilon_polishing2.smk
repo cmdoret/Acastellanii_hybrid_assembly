@@ -23,10 +23,21 @@ rule align_shotgun_3c_assembly:
             {params.bt2_preset}
     """
 
+rule index_shotgun_bam_pilon_3c:
+  input: join(TMP, 'alignments', '05_Ac_{strain}_flye.sam')
+  output: join(TMP, 'alignments', '05_Ac_{strain}_flye.bam')
+  singularity: "docker://biocontainers/samtools:latest"
+  threads: CPUS
+  shell:
+    """
+    samtools view -@ {threads} -O BAM -o {output} {input}
+    samtools index -@ {threads} {output}
+    """
+
 # Use pilon to polish the HI-C scaffolded assembly
 rule post_hic_pilon_polishing:
   input:
-    alignment = join(TMP, "alignments", "05_Ac_{strain}_instagraal.sam"),
+    alignment = join(TMP, "alignments", "05_Ac_{strain}_instagraal.bam"),
     assembly = join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa')
   output: join(OUT, 'assemblies', '06_Ac_{strain}_pilon2.fa')
   params:
