@@ -71,7 +71,7 @@ rule align_merged_shotgun_pilon_assembly:
     bowtie2-build {input.assembly} {params.bt2_index}
     bowtie2 -x {params.bt2_index} \
             -U {input.reads} \
-            -S {output.alignment}
+            -S {output} \
             -p {threads} \
             {params.bt2_preset}
     """
