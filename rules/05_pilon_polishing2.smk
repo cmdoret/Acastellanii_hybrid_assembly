@@ -24,13 +24,13 @@ rule align_shotgun_3c_assembly:
     """
 
 rule index_shotgun_bam_pilon_3c:
-  input: join(TMP, 'alignments', '05_Ac_{strain}_flye.sam')
-  output: join(TMP, 'alignments', '05_Ac_{strain}_flye.bam')
-  singularity: "docker://biocontainers/samtools:latest"
+  input: join(TMP, "alignments", "05_Ac_{strain}_instagraal.sam")
+  output: join(TMP, "alignments", "05_Ac_{strain}_instagraal.bam")
+  singularity: "docker://biocontainers/samtools:v1.7.0_cv4"
   threads: CPUS
   shell:
     """
-    samtools view -@ {threads} -O BAM -o {output} {input}
+    samtools sort -@ {threads} -O BAM -o {output} {input} 
     samtools index -@ {threads} {output}
     """
 
