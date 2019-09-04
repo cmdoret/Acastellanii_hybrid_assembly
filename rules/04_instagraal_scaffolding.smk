@@ -8,14 +8,16 @@ rule hicstuff_hic_processing:
     threads: CPUS
     resources: mem=32000
     params:
+      idx = temporary(join(TMP, '04_Ac_{strain}_racon')),
       enzyme = "DpnII",
       r2 = join(TMP, "reads", "{strain}_hic.end2.fq.gz"),
     singularity: "docker://koszullab/hicstuff:latest"
     shell:
       """
+      bowtie2-build {input.assembly} {params.idx}
       hicstuff pipeline -t {threads} \
                         -e {params.enzyme} \
-                        -g {input.assembly} \
+                        -g {params.idx} \
                         {input.r1} {params.r2} \
                         -o {output}
       """
@@ -31,7 +33,7 @@ rule instagraal_scaffolding:
     instagraal_input_dir = join(TMP, 'instagraal', '{strain}')
   shell:
     """
-    mkdir {params.instagraal_input_dir}
+    mkdir -p {params.instagraal_input_dir}
     cp "{input.hicstuff_dir}/abs_fragments_contacts_weighted.txt" \
        "{input.hicstuff_dir}/fragments_list.txt" \
        "{input.hicstuff_dir}/info_contigs.txt" \
