@@ -10,8 +10,8 @@ tmp_dir  : tmp
 n_cpus   : 32
 
 remote:
-  provider   : "local"
-  bucket     : "/pasteur/scratch/users/cmatthey/Acastellanii_hybrid_assembly"
+  provider   : "GS"
+  bucket     : "test_assembly"
   host       : "tars.pasteur.fr"
   username   : "cmatthey"
   ssh_key    : "/home/cmatthey/.ssh/tars_rsa"

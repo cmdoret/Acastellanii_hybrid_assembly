@@ -2,21 +2,21 @@
 # Generate Hi-C matrix from raw reads
 rule hicstuff_hic_processing:
     input:
-      r1 = join(TMP, "reads", "{strain}_Hi-C.end1.fq.gz"),
-      assembly = join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa')
-    output: directory(join(TMP, "hicstuff", "{strain}"))
+      r1 = GS.remote(join(TMP, "reads", "{strain}_Hi-C.end1.fq.gz")),
+      r2 = GS.remote(join(TMP, "reads", "{strain}_Hi-C.end2.fq.gz")),
+      assembly = GS.remote(join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa'))
+    output: GS.remote(directory(join(TMP, "hicstuff", "{strain}")))
     threads: CPUS
     resources: mem=32000
     params:
       enzyme = "DpnII",
-      r2 = join(TMP, "reads", "{strain}_Hi-C.end2.fq.gz"),
     singularity: "docker://koszullab/hicstuff:latest"
     shell:
       """
       hicstuff pipeline -t {threads} \
                         -e {params.enzyme} \
                         -g {input.assembly} \
-                        {input.r1} {params.r2} \
+                        {input.r1} {input.r2} \
                         -o {output}
       """
 
@@ -24,11 +24,11 @@ rule hicstuff_hic_processing:
 # Perform Hi-C based scaffolding using instagraal
 rule instagraal_scaffolding:
   input:
-    assembly = join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa'),
-    hicstuff_dir = join(TMP, "hicstuff", "{strain}")
-  output: join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa')
+    assembly = GS.remote(join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa')),
+    hicstuff_dir = GS.remote(join(TMP, "hicstuff", "{strain}"))
+  output: GS.remote(join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa'))
   params:
-    instagraal_input_dir = join(TMP, 'instagraal', '{strain}')
+    instagraal_input_dir = GS.remote(join(TMP, 'instagraal', '{strain}'))
   shell:
     """
     mkdir {params.instagraal_input_dir}

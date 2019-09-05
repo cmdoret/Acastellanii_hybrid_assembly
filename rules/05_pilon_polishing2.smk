@@ -2,12 +2,12 @@
 #Align shotgun reads to the scaffolded assembly
 rule align_shotgun_3c_assembly:
   input:
-    r1 = join(TMP, "reads", "{strain}_shotgun.end1.fq.gz"),
-    assembly = join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa')
-  output: temp(join(TMP, "alignments", "05_Ac_{strain}_instagraal.sam"))
+    r1 = GS.remote(join(TMP, "reads", "{strain}_shotgun.end1.fq.gz")),
+    r2 = GS.remote(join(TMP, "reads", "{strain}_shotgun.end2.fq.gz")),
+    assembly = GS.remote(join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa'))
+  output: GS.remote(join(TMP, "alignments", "05_Ac_{strain}_instagraal.sam"))
   params:
-    r2 = join(TMP, "reads", "{strain}_shotgun.end2.fq.gz"),
-    bt2_index = temp(join(TMP, "05_Ac_{strain}_instagraal")),
+    bt2_index = GS.remote(join(TMP, "05_Ac_{strain}_instagraal")),
     bt2_preset = config['params']['bowtie2']
   singularity: "docker://cmdoret/bowtie2:2.3.4.1"
   threads: CPUS
@@ -17,7 +17,7 @@ rule align_shotgun_3c_assembly:
     bowtie2-build {input.assembly} {params.bt2_index}
     bowtie2 -x {params.bt2_index} \
             -1 {input.r1} \
-            -2 {params.r2} \
+            -2 {input.r2} \
             -S {output} \
             -p {threads} \
             {params.bt2_preset}
@@ -26,12 +26,12 @@ rule align_shotgun_3c_assembly:
 # Use pilon to polish the HI-C scaffolded assembly
 rule post_hic_pilon_polishing:
   input:
-    alignment = join(TMP, "alignments", "05_Ac_{strain}_instagraal.sam"),
-    assembly = join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa')
-  output: join(OUT, 'assemblies', '06_Ac_{strain}_pilon2.fa')
+    alignment = GS.remote(join(TMP, "alignments", "05_Ac_{strain}_instagraal.sam")),
+    assembly = GS.remote(join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa'))
+  output: GS.remote(join(OUT, 'assemblies', '06_Ac_{strain}_pilon2.fa'))
   params:
     pilon_preset = config['params']['pilon'],
-    pilon_outdir = temp(join(TMP, "pilon", "05_Ac_{strain}_instagraal")),
+    pilon_outdir = GS.remote(join(TMP, "pilon", "05_Ac_{strain}_instagraal")),
   singularity: "docker://cmdoret/pilon:1.22"
   threads: CPUS
   resources: mem=256000

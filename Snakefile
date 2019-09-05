@@ -3,6 +3,7 @@
 
 from os.path import join
 from snakemake.utils import validate
+from snakemake.remote.GS import RemoteProvider as GSRemoteProvider
 import pandas as pd
 import numpy as np
 
@@ -18,9 +19,11 @@ units = pd.read_csv(config["units"], sep='\t', dtype=str).set_index(["strain", "
 # Enforces str in index
 units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])
 
+bucket = config['remote']['bucket']
+GS = GSRemoteProvider()
 CPUS = config['n_cpus']
-TMP = config['tmp_dir']
-OUT = config['out_dir']
+TMP = join(bucket, config['tmp_dir'])
+OUT = join(bucket, config['out_dir'])
 
 ## WILDCARD CONSTRAINTS
 wildcard_constraints:
@@ -90,6 +93,25 @@ def get_fastqs(wildcards):
         }
     return {"r1": list(map(access_remote, fqs.fq1))}
 
+def ok_google():
+  """
+  Used to work around the incompatibility between google cloud and functions as input.
+  Builds a dictionary of paths for librairies and libtypes and prepends google storage 
+  bucket name to each path.
+  """
+  # path_dict = {libtype: {library: {fq1: [path1, ...], fq2: [path1, ...]}}}
+  path_dict = {}
+  for t in np.unique(units.libtype):
+    path_dict[t] = {}
+    for s in samples.strain:
+      path_dict[t][s] = {}
+      for e in ["fq1", "fq2"]:
+        fqs = units.loc[(units.strain == s) & (units.libtype == t), e].dropna().values.tolist()
+        path_dict[t][s][e] = list(map(lambda x: join(bucket, x), fqs))
+  return path_dict
+
+units_dict = ok_google()
+
 ## PIPELINE
 include: "rules/01_reads_processing.smk"
 include: "rules/02_flye_assembly.smk"
@@ -100,4 +122,4 @@ include: "rules/05_pilon_polishing2.smk"
 # include: "rules/07_quast_report.smk"
 
 rule all:
-    input: expand(join(OUT, 'assemblies', '06_Ac_{strain}_pilon2.fa'), strain=samples['strain'])
+    input: GS.remote(expand(join(OUT, 'assemblies', '06_Ac_{strain}_pilon2.fa'), strain=samples['strain']))
