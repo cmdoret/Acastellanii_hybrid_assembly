@@ -4,8 +4,18 @@ samples  : samples.tsv
 units    : units.tsv
 
 # Default path for generated files
-out_dir  : /data/legionella/output/snakemake/out
-tmp_dir  : /data/legionella/output/snakemake/tmp
+out_dir  : out
+tmp_dir  : tmp
+
+n_cpus   : 32
+
+remote:
+  provider   : "local"
+  bucket     : "/pasteur/scratch/users/cmatthey/Acastellanii_hybrid_assembly"
+  host       : "tars.pasteur.fr"
+  username   : "cmatthey"
+  ssh_key    : "/home/cmatthey/.ssh/tars_rsa"
+  password   : ""
 
 # Software default parameters
 params:
