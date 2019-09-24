@@ -1,4 +1,7 @@
-# Use redundans reduction step to remove heterozygous contigs before scaffolding
+# Use minimap2-based custom tool to filter out redundant contigs
+# Each contigs is mapped against the genome. If it has high BLAST-like
+# identity and overlap with a larger contig, it is considered homozygous
+# and discarded.
 rule filter_het_contigs:
   input:
     genome = join(OUT, 'assemblies', '03_Ac_{strain}_racon.fa'),
@@ -6,17 +9,10 @@ rule filter_het_contigs:
     fa = join(OUT, 'assemblies', '04_Ac_{strain}_redundans.fa'), 
     redundans = join(TMP, '{strain}_drop_haplotypes.fa')
   params:
-    similarity = 90
-  singularity: "docker://lpryszcz/redundans"
+    identity = 0.51,
+    overlap = 0.8
   shell:
-    """
-    /redundans/redundans.py \
-      --noscaffolding \
-      --nocleaning \
-      --norearrangements \
-      --nogapclosing \
-      -v -f test/contigs.fa -o {output.redundans}"
-    """
+    "python scripts/filter_het.py -I {params.identity} -O {params.overlap} {input} {output}"
 
 # Generate Hi-C matrix from raw reads
 rule hicstuff_hic_processing:
