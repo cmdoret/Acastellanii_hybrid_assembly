@@ -7,13 +7,12 @@ declare -i N_CONTIGS
 declare -i DONE_CONTIGS
 # Split genome into contigs
 GENOME="$1"
-mkdir "$CONTIG_DIR" && cd "$CONTIG_DIR"
-awk '/^>/ {if (seqlen){print seqlen}; printf "%s ",$0 ;seqlen=0;next; } { seqlen += length($0)}END{print seqlen}' "../${GENOME}"
-cd ..
-
 SIM_OUT=$2
-CONTIG_DIR='contigs'
 OUT_DIR=$2
+mkdir "$CONTIG_DIR" && cd "$CONTIG_DIR"
+awk '/^>/ {if (seqlen){print seqlen}; printf "%s ",$0 ;seqlen=0;next; } { seqlen += length($0)}END{print seqlen}' "$GENOME}"
+
+CONTIG_DIR='contigs'
 N_CONTIGS=$(find $CONTIG_DIR/ -type f | wc -l)
 DONE_CONTIGS=0
 NCPU=12
