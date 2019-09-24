@@ -34,7 +34,6 @@ def filter_het(fa_in, fa_out, min_identity, min_overlap):
     Filters redundant (homozygous) contigs out from an in put fasta file
     and generate a "homozygous" output fasta file.
     """
-
     a = mp.Aligner(fa_in)
     drop_seqs = set()
     # Align each sequence against the rest of contigs
@@ -62,7 +61,7 @@ def filter_het(fa_in, fa_out, min_identity, min_overlap):
                         sys.stderr.write(
                             f"Dropped {query_name} ({query_len} bp): matched {hit.ctg}"
                             f" ({hit.ctg_len} bp) with {100 * round(identity)}%"
-                            f" identity and {100 * round(overlap)}% overlap."
+                            f" identity and {100 * round(overlap)}% overlap.\n"
                         )
                 else:
                     overlap = hit.blen / len(a.seq(query_name))
@@ -70,7 +69,7 @@ def filter_het(fa_in, fa_out, min_identity, min_overlap):
                         sys.stderr.write(
                             f"Dropped {hit.ctg} ({hit.ctg_len} bp): matched {query_name}"
                             f" ({query_len} bp) with {100 * round(identity)}%"
-                            f" identity and {100 * round(overlap)}% overlap."
+                            f" identity and {100 * round(overlap)}% overlap.\n"
                         )
                         drop_seqs.add(hit.ctg)
 

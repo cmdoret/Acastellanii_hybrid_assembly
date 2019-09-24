@@ -57,6 +57,27 @@ rule pilon_polishing:
     mv {params.pilon_outdir}/{wildcards.strain}.fasta {output}
     """
 
+
+# Use minimap2-based custom tool to filter out redundant contigs
+# Each contigs is mapped against the genome. If it has high BLAST-like
+# identity and overlap with a larger contig, it is considered homozygous
+# and discarded.
+rule filter_het_contigs:
+  input: join(OUT, 'assemblies', '02_Ac_{strain}_pilon.fa'),
+  output: join(OUT, 'assemblies', '03_Ac_{strain}_homozygous.fa')
+  params:
+    identity = 0.51,
+    overlap = 0.8
+  shell:
+    """
+    python scripts/filter_het.py \
+      -I {params.identity} \
+      -O {params.overlap} \
+      {input} \
+      {output}
+    """
+
+
 rule combine_fq_pairs:
   input:
     r1 = join(TMP, "reads", "{strain}_shotgun.end1.fq.gz")
@@ -65,12 +86,13 @@ rule combine_fq_pairs:
     r2 = join(TMP, "reads", "{strain}_shotgun.end2.fq.gz")
   shell: "cat {input.r1} {params.r2} > {output}"
 
+
 # Map shotgun reads in single end mode for consensus correction via racon
 rule align_merged_shotgun_pilon_assembly:
   input:
     reads = join(TMP, "reads", "{strain}_merged_shotgun.fq.gz"),
-    assembly = join(OUT, 'assemblies', '02_Ac_{strain}_pilon.fa')
-  output: temp(join(TMP, "alignments", "02_Ac_{strain}_pilon_merged_shotgun.sam"))
+    assembly = join(OUT, 'assemblies', '03_Ac_{strain}_homozygous.fa')
+  output: temp(join(TMP, "alignments", "03_Ac_{strain}_homozygous_merged_shotgun.sam"))
   params:
     bt2_index = temp(join(TMP, "01_Ac_{strain}_flye")),
     bt2_preset = config['params']['bowtie2']
@@ -90,10 +112,10 @@ rule align_merged_shotgun_pilon_assembly:
 # Use racon-illumina for another round of short reads polishing
 rule racon_polishing:
   input:
-    assembly = join(OUT, 'assemblies', '02_Ac_{strain}_pilon.fa'),
+    assembly = join(OUT, 'assemblies', '03_Ac_{strain}_homozygous.fa'),
     illumina = join(TMP, "reads", "{strain}_merged_shotgun.fq.gz"),
-    alignment = join(TMP, "alignments", "02_Ac_{strain}_pilon_merged_shotgun.sam")
-  output: join(OUT, 'assemblies', '03_Ac_{strain}_racon.fa')
+    alignment = join(TMP, "alignments", "03_Ac_{strain}_homozygous_merged_shotgun.sam")
+  output: join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa')
   threads: CPUS
   resources: mem=128000
   singularity: "docker://cmdoret/racon:1.3.2"
