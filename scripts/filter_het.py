@@ -60,16 +60,16 @@ def filter_het(fa_in, fa_out, min_identity, min_overlap):
                         drop_seqs.add(query_name)
                         sys.stderr.write(
                             f"Dropped {query_name} ({query_len} bp): matched {hit.ctg}"
-                            f" ({hit.ctg_len} bp) with {100 * round(identity)}%"
-                            f" identity and {100 * round(overlap)}% overlap.\n"
+                            f" ({hit.ctg_len} bp) with {100 * round(identity, 2)}%"
+                            f" identity and {100 * round(overlap, 2)}% overlap.\n"
                         )
                 else:
                     overlap = hit.blen / len(a.seq(query_name))
                     if overlap >= min_overlap:
                         sys.stderr.write(
                             f"Dropped {hit.ctg} ({hit.ctg_len} bp): matched {query_name}"
-                            f" ({query_len} bp) with {100 * round(identity)}%"
-                            f" identity and {100 * round(overlap)}% overlap.\n"
+                            f" ({query_len} bp) with {100 * round(identity, 2)}%"
+                            f" identity and {100 * round(overlap, 2)}% overlap.\n"
                         )
                         drop_seqs.add(hit.ctg)
 
