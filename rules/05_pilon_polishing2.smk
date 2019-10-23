@@ -4,10 +4,10 @@ rule align_shotgun_3c_assembly:
   input:
     r1 = join(TMP, "reads", "{strain}_shotgun.end1.fq.gz"),
     assembly = join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa')
-  output: temp(join(TMP, "alignments", "05_Ac_{strain}_instagraal.sam"))
+  output: temporary(join(TMP, "alignments", "05_Ac_{strain}_instagraal.sam"))
   params:
     r2 = join(TMP, "reads", "{strain}_shotgun.end2.fq.gz"),
-    bt2_index = temp(join(TMP, "05_Ac_{strain}_instagraal")),
+    bt2_index = temporary(join(TMP, "05_Ac_{strain}_instagraal")),
     bt2_preset = config['params']['bowtie2']
   singularity: "docker://cmdoret/bowtie2:2.3.4.1"
   threads: CPUS
@@ -25,13 +25,15 @@ rule align_shotgun_3c_assembly:
 
 rule index_shotgun_bam_pilon_3c:
   input: join(TMP, "alignments", "05_Ac_{strain}_instagraal.sam")
-  output: join(TMP, "alignments", "05_Ac_{strain}_instagraal.bam")
+  output: 
+    bam = temporary(join(TMP, "alignments", "05_Ac_{strain}_instagraal.bam")),
+    bai = temporary(join(TMP, "alignments", "05_Ac_{strain}_instagraal.bam.bai"))
   singularity: "docker://biocontainers/samtools:v1.7.0_cv4"
   threads: CPUS
   shell:
     """
-    samtools sort -@ {threads} -O BAM -o {output} {input} 
-    samtools index -@ {threads} {output}
+    samtools sort -@ {threads} -O BAM -o {output.bam} {input} 
+    samtools index -@ {threads} {output.bam}
     """
 
 # Use pilon to polish the HI-C scaffolded assembly
@@ -83,13 +85,15 @@ rule align_shotgun_3c_assembly_round2:
 
 rule index_shotgun_bam_pilon_3c_round2:
   input: join(TMP, "alignments", "06_Ac_{strain}_pilon.sam")
-  output: join(TMP, "alignments", "06_Ac_{strain}_pilon.bam")
+  output: 
+    bam = temporary(join(TMP, "alignments", "06_Ac_{strain}_pilon.bam")),
+    bai = temporary(join(TMP, "alignments", "06_Ac_{strain}_pilon.bam.bai"))
   singularity: "docker://biocontainers/samtools:v1.7.0_cv4"
   threads: CPUS
   shell:
     """
-    samtools sort -@ {threads} -O BAM -o {output} {input} 
-    samtools index -@ {threads} {output}
+    samtools sort -@ {threads} -O BAM -o {output.bam} {input} 
+    samtools index -@ {threads} {output.bam}
     """
 
 # Use pilon to polish the HI-C scaffolded assembly
