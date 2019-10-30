@@ -3,8 +3,9 @@
     {
         "queue"  : "normal",
         "ncpus"  : 32,
-        "mem" : 16000,
-        "ntasks": 1,
+        "mem"    : 16000,
+        "ntasks" : 1,
+        "time"   : 359,
         "name"   : "Ac_assembly.{rule}.{wildcards}",
         "output" : "logs/cluster/{rule}.{wildcards}.out",
         "error"  : "logs/cluster/{rule}.{wildcards}.err"
@@ -19,5 +20,20 @@
     "flye_assembly":
     {
         "mem": 64000,
+    },
+    "pilon_polishing":
+    {
+        "mem": 256000,
+        "ncpus": 48,
+    },
+    "index_shotgun_bam_pilon":
+    {
+        "mem": 8000,
+        "ncpus": 4
+    },
+    "combine_units":
+    {
+        "mem": 8000,
+        "ncpus": 4
     }
 }
