@@ -49,7 +49,6 @@ rule pilon_polishing:
     pilon_outdir = directory(join(TMP, 'pilon', '01_Ac_{strain}_flye'))
   singularity: "docker://cmdoret/pilon:1.22"
   threads: CPUS
-  resources: mem=256000
   shell:
     """
     pilon --frags {input.bam} \
@@ -98,7 +97,7 @@ rule align_merged_shotgun_pilon_assembly:
     assembly = join(OUT, 'assemblies', '03_Ac_{strain}_homozygous.fa')
   output: temporary(join(TMP, "alignments", "03_Ac_{strain}_homozygous_merged_shotgun.sam"))
   params:
-    bt2_index = temporary(join(TMP, "01_Ac_{strain}_flye")),
+    bt2_index = join(TMP, "03_Ac_{strain}_homozygous"),
     bt2_preset = config['params']['bowtie2']
   singularity: "docker://cmdoret/bowtie2:2.3.4.1"
   threads: CPUS
