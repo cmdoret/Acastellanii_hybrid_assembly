@@ -7,6 +7,9 @@ units    : units.tsv
 out_dir  : out
 tmp_dir  : tmp
 
+# Mitochondrial genome from previous assembly
+mitochondrion : assets/Acastellanii_neff_mitochontrion_NC_001637.1.fasta
+
 n_cpus   : 32
 
 remote:
