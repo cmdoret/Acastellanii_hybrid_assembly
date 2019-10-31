@@ -94,10 +94,12 @@ def get_fastqs(wildcards):
 include: "rules/01_reads_processing.smk"
 include: "rules/02_flye_assembly.smk"
 include: "rules/03_pilon_racon_polishing.smk"
+include: "rules/03a_mitochondria.smk"
 include: "rules/04_instagraal_scaffolding.smk"
 include: "rules/05_pilon_polishing2.smk"
 # include: "rules/06_LINKS_scaffolding.smk"
 # include: "rules/07_quast_report.smk"
 
 rule all:
-    input: expand(join(OUT, 'assemblies', '06_Ac_{strain}_pilon2.fa'), strain=samples['strain'])
+    input: expand(join(OUT, 'assemblies', '07_Ac_{strain}_pilon2.fa'), strain=samples['strain'])
+

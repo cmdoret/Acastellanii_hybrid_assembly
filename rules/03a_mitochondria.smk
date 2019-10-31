@@ -6,16 +6,16 @@
 rule split_mito_tigs:
     input:
         genome = join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa'),
-        mitochondrion = config['mitochondrion'] 
+        mito= config['mitochondrion'] 
     output:
-        nuclear = join(OUT, 'assemblies', '04a_Ac_{strain}_racon_nuclear.fa'),
-        mito = join(OUT, 'assemblies', '04b_Ac_{strain}_racon_mito.fa')
+        nucl= join(OUT, 'assemblies', '04_Ac_{strain}_racon_nucl.fa'),
+        mito = join(OUT, 'assemblies', '04_Ac_{strain}_racon_mito.fa')
 
     shell:
         """
         python scripts/split_mito.py \
             -g {input.genome} \
-            -m {input.mitochondrion} \
-            -N {output.nuclear} \
+            -m {input.mito} \
+            -N {output.nucl} \
             -M {output.mito}
         """

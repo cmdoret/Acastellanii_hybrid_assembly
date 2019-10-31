@@ -1,17 +1,17 @@
 
-# Generate Hi-C matrix from raw reads
+# Generate Hi-C matrix of the nuclear genome from raw reads 
 rule hicstuff_hic_processing:
     input:
       r1 = join(TMP, "reads", "{strain}_hic.end1.fq.gz"),
-      assembly = join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa')
-    output: directory(join(TMP, "hicstuff", "{strain}"))
+      assembly = join(OUT, 'assemblies', '04_Ac_{strain}_racon_nucl.fa')
+    output: directory(join(TMP, "hicstuff", "{strain}_nucl"))
     threads: CPUS
     resources: mem=32000
     params:
-      idx = temporary(join(TMP, '04_Ac_{strain}_racon')),
+      idx = temporary(join(TMP, '04_Ac_{strain}_racon_nucl')),
       enzyme = "DpnII",
       r2 = join(TMP, "reads", "{strain}_hic.end2.fq.gz"),
-    singularity: "docker://koszullab/hicstuff:latest"
+    singularity: "docker://koszullab/hicstuff:v1.6.6"
     shell:
       """
       bowtie2-build {input.assembly} {params.idx}
@@ -26,11 +26,11 @@ rule hicstuff_hic_processing:
 # Perform Hi-C based scaffolding using instagraal
 rule instagraal_scaffolding:
   input:
-    assembly = join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa'),
-    hicstuff_dir = join(TMP, "hicstuff", "{strain}")
-  output: join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa')
+    assembly = join(OUT, 'assemblies', '04_Ac_{strain}_racon_nucl.fa'),
+    hicstuff_dir = join(TMP, "hicstuff", "{strain}_nucl")
+  output: join(OUT, 'assemblies', '05_Ac_{strain}_instagraal_nucl.fa')
   params:
-    instagraal_input_dir = join(TMP, 'instagraal', '{strain}')
+    instagraal_input_dir = join(TMP, 'instagraal', '{strain}_nucl')
   shell:
     """
     mkdir -p {params.instagraal_input_dir}
@@ -40,3 +40,11 @@ rule instagraal_scaffolding:
        "{params.instagraal_input_dir}"
     instagraal {params.instagraal_input_dir} {input.assembly} {output}
     """
+
+# Merge nuclear scaffolds and mitochondrial contigs
+rule merge_organelles:
+    input:
+        nucl = join(OUT, 'assemblies', '05_Ac_{strain}_instagraal_nucl.fa'),
+        mito = join(OUT, 'assemblies', '04_Ac_{strain}_racon_mito.fa')
+    output: join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa')
+    shell: "cat {input.nucl} {input.mito} > {output}"
