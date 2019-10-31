@@ -41,7 +41,7 @@ rule post_hic_pilon_polishing:
   input:
     alignment = join(TMP, "alignments", "05_Ac_{strain}_instagraal.bam"),
     assembly = join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa')
-  output: join(OUT, 'assemblies', '06_Ac_{strain}_pilon2.fa')
+  output: join(OUT, 'assemblies', '06_Ac_{strain}_pilon.fa')
   params:
     pilon_preset = config['params']['pilon'],
     pilon_outdir = temp(join(TMP, "pilon", "05_Ac_{strain}_instagraal")),
