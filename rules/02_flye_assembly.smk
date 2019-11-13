@@ -3,6 +3,7 @@
 rule flye_assembly:
   input: join(TMP, 'reads', '{strain}_long_reads_filtered.fa'),
   output: assembly = join(OUT, 'assemblies', '01_Ac_{strain}_flye.fa')
+  log: join('logs', '02_flye_assembly_{strain}.log')
   params:
     flye_dir = directory(join(TMP, '{strain}', 'flye'))
   threads: CPUS
@@ -14,7 +15,8 @@ rule flye_assembly:
     --threads {threads} \
     --iterations 3 \
     -o {params.flye_dir} \
-    -g 45m
+    -g 45m \
+    2> {log}
     mv {params.flye_dir}/scaffolds.fasta {output}
     """
 
@@ -24,6 +26,7 @@ rule long_reads_polishing:
     ont = join(TMP, 'reads', '{strain}_long_reads.fa'),
     contigs = join(OUT, 'assemblies', '01_Ac_{strain}_flye.fa')
   output: join(OUT, 'assemblies', '02_Ac_{strain}_consent.fa')
+  log: join('logs', '02_consent_polishing_{strain}.log')
   message: "Using CONSENT to polish the draft assembly with ONT reads."
   params:
     tmp = join(TMP, "CONSENT")
@@ -34,5 +37,7 @@ rule long_reads_polishing:
     CONSENT-polish  --contigs {input.contigs} \
                     --reads {input.ont} \
                     --out {output} \
-                    --nproc {threads}
+                    --nproc {threads} \
+                    2> {log}
+
     """

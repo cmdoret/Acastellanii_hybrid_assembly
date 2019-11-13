@@ -44,6 +44,7 @@ rule pilon_polishing:
     alignment = join(TMP, "alignments", "02_Ac_{strain}_consent.bam"),
     assembly = join(OUT, 'assemblies', '02_Ac_{strain}_consent.fa')
   output: join(OUT, 'assemblies', '03_Ac_{strain}_pilon.fa')
+  log: join('logs', '03_pilon_polishing_{strain}.log')
   params:
     pilon_preset = config['params']['pilon'],
     pilon_outdir = directory(join(TMP, 'pilon', '02_Ac_{strain}_consent'))
@@ -55,7 +56,8 @@ rule pilon_polishing:
           --genome {input.assembly} \
           --outdir {params.pilon_outdir} \
           --output {wildcards.strain} \
-          {params.pilon_preset}
+          {params.pilon_preset} \
+          2> {log}
 
     mv {params.pilon_outdir}/{wildcards.strain}.fasta {output}
     """
@@ -101,6 +103,7 @@ rule racon_polishing:
     illumina = join(TMP, "reads", "{strain}_merged_shotgun.fq.gz"),
     alignment = join(TMP, "alignments", "03_Ac_{strain}_pilon_merged_shotgun.sam")
   output: join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa')
+  log: join('logs', '03_racon_polishing_{strain}.log')
   threads: CPUS
   resources: mem=128000
   singularity: "docker://cmdoret/racon:1.3.2"
@@ -111,5 +114,6 @@ rule racon_polishing:
                   {input.illumina} \
                   {input.alignment} \
                   {input.assembly} \
-                  > {output}
+                  > {output} \
+                  2> {log}
     """
