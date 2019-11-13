@@ -92,7 +92,7 @@ def get_fastqs(wildcards):
 
 ## PIPELINE
 include: "rules/01_reads_processing.smk"
-include: "rules/02_ra_assembly.smk"
+include: "rules/02_flye_assembly.smk"
 include: "rules/03_pilon_racon_polishing.smk"
 include: "rules/03a_mitochondria.smk"
 include: "rules/04_instagraal_scaffolding.smk"
