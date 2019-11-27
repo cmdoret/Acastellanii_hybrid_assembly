@@ -77,5 +77,10 @@ rule filter_long_reads:
   output: join(TMP, 'reads', '{strain}_long_reads_filtered.fa')
   params:
     keep=30
-  shell: "filtlong -p {params.keep} -1 {input.ilm1} -2 {input.ilm2} {input.ont} > {output}"
+  shell:
+    """
+    filtlong -p {params.keep} -1 {input.ilm1} -2 {input.ilm2} {input.ont} \
+      | sed 's/^\\(>[^ ]*\\) .*/\\1/' \
+      > {output}
+    """
 

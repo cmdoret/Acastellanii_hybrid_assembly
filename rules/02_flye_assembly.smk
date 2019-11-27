@@ -10,14 +10,14 @@ rule flye_assembly:
   singularity: "docker://cmdoret/flye:2.3.6"
   shell:
     """
-    mkdir -p {params.flye_dir}
     flye --nano-raw {input} \
     --threads {threads} \
     --iterations 3 \
     -o {params.flye_dir} \
     -g 45m \
     2> {log}
-    mv {params.flye_dir}/scaffolds.fasta {output}
+    # Format FASTA into 1 line / sequence for CONSENT
+    awk '/^>/ {{printf("%s%s\n",(N>0?"\n":""),$0);N++;next;}} {{printf("%s",$0);}} END {{printf("\n");}}' {params.flye_dir}/scaffolds.fasta > {output}
     """
 
 # Polish the draft with long reads
