@@ -74,13 +74,13 @@ rule filter_long_reads:
     ont = join(TMP, 'reads', '{strain}_long_reads.fa'),
     ilm1 = join(TMP, 'reads', '{strain}_shotgun.end1.fq.gz'),
     ilm2 = join(TMP, 'reads', '{strain}_shotgun.end2.fq.gz')
-  output: join(TMP, 'reads', '{strain}_long_reads_filtered.fa')
+  output: temporary(join(TMP, 'reads', '{strain}_long_reads_filtered_tmp.fa'))
   params:
-    keep=30
-  shell:
-    """
-    filtlong -p {params.keep} -1 {input.ilm1} -2 {input.ilm2} {input.ont} \
-      | sed 's/^\\(>[^ ]*\\) .*/\\1/' \
-      > {output}
-    """
+    keep=80
+  shell: "filtlong -p {params.keep} -1 {input.ilm1} -2 {input.ilm2} {input.ont} > {output}"
 
+# Format long reads fasta into 1 read / line for CONSENT
+rule format_long_reads:
+  input: join(TMP, 'reads', '{strain}_long_reads_filtered_tmp.fa')
+  output: join(TMP, 'reads', '{strain}_long_reads_filtered.fa')
+  shell: "sed 's/^\\(>[^ ]*\\) .*/\\1/' {input} > {output}"

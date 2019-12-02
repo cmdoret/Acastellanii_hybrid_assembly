@@ -39,6 +39,7 @@ rule index_shotgun_bam_pilon_3c:
 # Use pilon to polish the HI-C scaffolded assembly
 rule post_hic_pilon_polishing:
   input:
+    bai = join(TMP, "alignments", "05_Ac_{strain}_instagraal.bam.bai"),
     alignment = join(TMP, "alignments", "05_Ac_{strain}_instagraal.bam"),
     assembly = join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa')
   output: join(OUT, 'assemblies', '06_Ac_{strain}_pilon.fa')
@@ -100,7 +101,8 @@ rule index_shotgun_bam_pilon_3c_round2:
 rule post_hic_pilon_polishing_round2:
   input:
     alignment = join(TMP, "alignments", "06_Ac_{strain}_pilon.bam"),
-    assembly = join(OUT, 'assemblies', '06_Ac_{strain}_pilon.fa')
+    assembly = join(OUT, 'assemblies', '06_Ac_{strain}_pilon.fa'),
+    bai = join(TMP, "alignments", "06_Ac_{strain}_pilon.bam.bai")
   output: join(OUT, 'assemblies', '07_Ac_{strain}_pilon2.fa')
   params:
     pilon_preset = config['params']['pilon'],
