@@ -5,11 +5,11 @@
 # to find which are mitochondrial
 rule split_mito_tigs:
     input:
-        genome = join(OUT, 'assemblies', '04_Ac_{strain}_racon.fa'),
+        genome = join(OUT, 'assemblies', '02_Ac_{strain}_hypo.fa'),
         mito= config['mitochondrion'] 
     output:
-        nucl= join(OUT, 'assemblies', '04_Ac_{strain}_racon_nucl.fa'),
-        mito = join(OUT, 'assemblies', '04_Ac_{strain}_racon_mito.fa')
+        nucl= join(OUT, 'assemblies', '02_Ac_{strain}_hypo_nucl.fa'),
+        mito = join(OUT, 'assemblies', '02_Ac_{strain}_hypo_mito.fa')
 
     shell:
         """

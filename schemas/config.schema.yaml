@@ -18,11 +18,5 @@ properties:
         properties:
             bowtie2:
                 type: string
-            racon_wrapper:
-                type: string
-            pilon:
-                type: string
         required:
             - bowtie2
-            - racon_wrapper
-            - pilon

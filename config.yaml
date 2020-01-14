@@ -1,27 +1,25 @@
 # Description of samples
-samples  : samples.tsv
+samples: samples.tsv
 # Description of sequencing units (libraries, resequencing, ...)
-units    : units.tsv
+units: units.tsv
 
 # Default path for generated files
-out_dir  : out
-tmp_dir  : tmp
+out_dir: out
+tmp_dir: tmp
 
 # Mitochondrial genome from previous assembly
-mitochondrion : assets/Acastellanii_neff_mitochontrion_NC_001637.1.fasta
+mitochondrion: assets/Acastellanii_neff_mitochontrion_NC_001637.1.fasta
 
-n_cpus   : 32
+n_cpus: 32
 
 remote:
-  provider   : "local"
-  bucket     : "/pasteur/scratch/users/cmatthey/Acastellanii_hybrid_assembly"
-  host       : "tars.pasteur.fr"
-  username   : "cmatthey"
-  ssh_key    : "/home/cmatthey/.ssh/tars_rsa"
-  password   : ""
+  provider: "local"
+  bucket: "/pasteur/scratch/users/cmatthey/Acastellanii_hybrid_assembly"
+  host: "tars.pasteur.fr"
+  username: "cmatthey"
+  ssh_key: "/home/cmatthey/.ssh/tars_rsa"
+  password: ""
 
 # Software default parameters
 params:
-    bowtie2       : "--sensitive-local"
-    racon_wrapper : "--subsample 45000000 100 -u"
-    pilon         : "--diploid"
+  bowtie2: "--sensitive-local"

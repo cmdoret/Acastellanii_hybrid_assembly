@@ -3,15 +3,15 @@
 rule hicstuff_hic_processing:
     input:
       r1 = join(TMP, "reads", "{strain}_hic.end1.fq.gz"),
-      assembly = join(OUT, 'assemblies', '04_Ac_{strain}_racon_nucl.fa')
+      assembly = join(OUT, 'assemblies', '02_Ac_{strain}_hypo_nucl.fa')
     output: directory(join(TMP, "hicstuff", "{strain}_nucl"))
     threads: CPUS
     resources: mem=32000
     params:
-      idx = temporary(join(TMP, '04_Ac_{strain}_racon_nucl')),
+      idx = temporary(join(TMP, '02_Ac_{strain}_hypo_nucl')),
       enzyme = "DpnII",
       r2 = join(TMP, "reads", "{strain}_hic.end2.fq.gz"),
-    singularity: "docker://koszullab/hicstuff:v1.6.6"
+    singularity: "docker://koszullab/hicstuff:v2.1.2"
     shell:
       """
       bowtie2-build {input.assembly} {params.idx}
@@ -26,25 +26,34 @@ rule hicstuff_hic_processing:
 # Perform Hi-C based scaffolding using instagraal
 rule instagraal_scaffolding:
   input:
-    assembly = join(OUT, 'assemblies', '04_Ac_{strain}_racon_nucl.fa'),
+    assembly = join(OUT, 'assemblies', '02_Ac_{strain}_hypo_nucl.fa'),
     hicstuff_dir = join(TMP, "hicstuff", "{strain}_nucl")
-  output: join(OUT, 'assemblies', '05_Ac_{strain}_instagraal_nucl.fa')
+  output:
+    assembly = join(OUT, 'assemblies', '03_Ac_{strain}_instagraal_nucl.fa'),
+    frags = join(TMP, 'info_frags_{strain}.txt')
   params:
-    instagraal_input_dir = join(TMP, 'instagraal', '{strain}_nucl')
+    instagraal_outdir = join(TMP, 'instagraal', '{strain}_nucl')
   shell:
-    """
-    mkdir -p {params.instagraal_input_dir}
-    cp "{input.hicstuff_dir}/abs_fragments_contacts_weighted.txt" \
-       "{input.hicstuff_dir}/fragments_list.txt" \
-       "{input.hicstuff_dir}/info_contigs.txt" \
-       "{params.instagraal_input_dir}"
-    instagraal {params.instagraal_input_dir} {input.assembly} {output}
+    """"
+    # Run instagraal
+    instagraal {input.hicstuff_dir} {input.assembly} {params.instagraal_outdir}
+    # Take the assembly out of instagraal output dir
+    cp {params.instagraal_outdir}/$(basename {input.hicstuff_dir})/test_mcmc_4/genome.fasta {output.assembly}
+    # Take info_frags file out, it will be useful for instagraal-polish
+    cp {params.instagraal_outdir}/$(basename {input.hicstuff_dir})/test_mcmc_4/info_frags.txt {output.frags}
     """
 
 # Merge nuclear scaffolds and mitochondrial contigs
 rule merge_organelles:
     input:
-        nucl = join(OUT, 'assemblies', '05_Ac_{strain}_instagraal_nucl.fa'),
-        mito = join(OUT, 'assemblies', '04_Ac_{strain}_racon_mito.fa')
-    output: join(OUT, 'assemblies', '05_Ac_{strain}_instagraal.fa')
+        nucl = join(OUT, 'assemblies', '03_Ac_{strain}_instagraal_nucl.fa'),
+        mito = join(OUT, 'assemblies', '02_Ac_{strain}_hypo_mito.fa')
+    output: join(OUT, 'assemblies', '03_Ac_{strain}_instagraal.fa')
     shell: "cat {input.nucl} {input.mito} > {output}"
+
+rule instagraal_polish:
+  input:
+    fasta = join(OUT, 'assemblies', '03_Ac_{strain}_instagraal.fa'),
+    frags = join(TMP, 'info_frags_{strain}.txt')
+  output: join(OUT, 'assemblies', '04_Ac_{strain}_instagraal_polish.fa')
+  shell: "instagraal-polish -m polishing -i {input.frags} -f {input.fasta} -o {output}"
