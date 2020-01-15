@@ -1,3 +1,22 @@
+# Precompute shotgun coverage required by hypo
+rule compute_cov:
+  input:
+    r1 = join(TMP, "reads", "{strain}_shotgun.end1.fq.gz"),
+    assembly = join(OUT, 'assemblies', '01_Ac_{strain}_flye.fa')
+  output:
+    cov=join(OUT, 'coverage_{strain}.txt'),
+    len=join(OUT, 'length_{strain}.txt')
+  threads: 1
+  shell:
+    """
+    set +o pipefail
+    fq_lines=$( gzip -dc {input.r1} | wc -l | awk '{{print $1}}')
+    n_reads=$((fq_lines / 4))
+    genome_len=$( grep -v "^>" {input.assembly} | tr -d '\\n' | wc -c )
+    read_len=$( gzip -dc {input.r1} | head -n2 | tail -n1 | tr -d '\\n' | wc -c )
+    echo $genome_len > {output.len}
+    echo $(( read_len * n_reads / genome_len )) > {output.cov}
+    """
 
 # Align shotgun reads to the ONT assembly
 rule align_shotgun_ont_assembly:
@@ -47,7 +66,9 @@ rule hypo_polishing:
   input:
     bam_sr = join(TMP, "alignments", "shotgun_vs_01_Ac_{strain}_flye.bam"),
     bam_ont = join(TMP, "alignments", "ONT_vs_01_Ac_{strain}_flye.bam"),
-    assembly = join(OUT, 'assemblies', '01_Ac_{strain}_flye.fa')
+    assembly = join(OUT, 'assemblies', '01_Ac_{strain}_flye.fa'),
+    cov=join(OUT, 'coverage_{strain}.txt'),
+    len=join(OUT, 'length_{strain}.txt')
   output:
     assembly = join(OUT, 'assemblies', '02_Ac_{strain}_hypo.fa'),
     fqlist = temporary(join(TMP, '{strain}_fq_list.txt'))
@@ -66,7 +87,7 @@ rule hypo_polishing:
          -b {input.bam_sr} \
          -B {input.bam_ont} \
          -d {input.assembly} \
-         -s 45m \
-         -c 60 \
+         -s $(cat {input.len}) \
+         -c $(cat {input.cov}) \
           2> {log}
     """

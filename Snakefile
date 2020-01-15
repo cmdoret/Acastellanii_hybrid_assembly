@@ -90,6 +90,7 @@ def get_fastqs(wildcards):
         }
     return {"r1": list(map(access_remote, fqs.fq1))}
 
+conda: "envs/genome_assembly.yaml"
 ## PIPELINE
 include: "rules/01_reads_processing.smk"
 include: "rules/02_flye_assembly.smk"

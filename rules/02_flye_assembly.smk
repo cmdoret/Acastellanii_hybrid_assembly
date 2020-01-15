@@ -1,4 +1,3 @@
-
 # Use flye for de-novo long reads assembly
 rule flye_assembly:
   input: join(TMP, 'reads', '{strain}_long_reads_filtered.fa'),
