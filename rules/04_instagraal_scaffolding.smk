@@ -19,7 +19,8 @@ rule hicstuff_hic_processing:
                         -e {params.enzyme} \
                         -g {params.idx} \
                         {input.r1} {params.r2} \
-                        -o {output}
+                        -o {output} \
+                        -T {output}
       """
 
 
@@ -43,17 +44,19 @@ rule instagraal_scaffolding:
     cp {params.instagraal_outdir}/$(basename {input.hicstuff_dir})/test_mcmc_4/info_frags.txt {output.frags}
     """
 
-# Merge nuclear scaffolds and mitochondrial contigs
-rule merge_organelles:
-    input:
-        nucl = join(OUT, 'assemblies', '03_Ac_{strain}_instagraal_nucl.fa'),
-        mito = join(OUT, 'assemblies', '02_Ac_{strain}_hypo_mito.fa')
-    output: join(OUT, 'assemblies', '03_Ac_{strain}_instagraal.fa')
-    shell: "cat {input.nucl} {input.mito} > {output}"
 
 rule instagraal_polish:
   input:
-    fasta = join(OUT, 'assemblies', '03_Ac_{strain}_instagraal.fa'),
+    fasta = join(OUT, 'assemblies', '02_Ac_{strain}_hypo_nucl.fa'),
     frags = join(TMP, 'info_frags_{strain}.txt')
-  output: join(OUT, 'assemblies', '04_Ac_{strain}_instagraal_polish.fa')
+  output: join(OUT, 'assemblies', '04_Ac_{strain}_instagraal_polish_nucl.fa')
   shell: "instagraal-polish -m polishing -i {input.frags} -f {input.fasta} -o {output}"
+
+
+# Merge nuclear scaffolds and mitochondrial contigs
+rule merge_organelles:
+    input:
+        nucl = join(OUT, 'assemblies', '04_Ac_{strain}_instagraal_polish_nucl.fa'),
+        mito = join(OUT, 'assemblies', '02_Ac_{strain}_hypo_mito.fa')
+    output: join(OUT, 'assemblies', '04_Ac_{strain}_instagraal_polish.fa')
+    shell: "cat {input.nucl} {input.mito} > {output}"
