@@ -1,12 +1,12 @@
 ### Acanthamoeba castellanii Hybrid assembly pipeline
 
-This repository contains an automatic and reproducible pipeline for the genome assembly of Acanthamoeba castellanii. The different steps of the pipeline are illustrated below.
+This repository contains an automatic and pipeline for the genome assembly of Acanthamoeba castellanii. The different steps of the pipeline are illustrated below.
 The analysis is implemented by combining the snakemake workflow system with [singularity containers](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#singularity).
 
 #### Dependencies
 
 * python >=3.7
-* snakemakea >= 5.5
+* snakemake >= 5.5
 * singularity >= 3.2
 
 #### Usage
@@ -29,12 +29,12 @@ The pipeline uses 3 types of input data:
  * Hi-C Illumina reads
  * Oxford Nanopore long reads
 
-The initial assembly is performed with long reads only using Flye. The short reads are then used to polish this assembly using pilon and racon. The Hi-C scaffolding is done using instagraal, followed by another round of pilon polishing to remove misassemblies introduced during scaffolding.
+The initial assembly is performed with long reads only using Flye. The short reads are then used to polish this assembly using HyPo. The Hi-C scaffolding is done using instagraal, followed by instagraal-polish to fix errors introduced by instagraal.
 
-TODO: Add long reads scaffolding using LINKS
-
-TODO: Add quast report at the end of the pipeline
+>TODO: Add quast report at the end of the pipeline
 
 Each rule requiring a third party software pulls a standalone container hosted on dockerhub to work in an isolated environment with a fixed version of the software.
 
 ![image](doc/assembly.svg)
+
+Unfortunately, instagraal requires access to a GPU with CUDA drivers. It is currently not possible to make it compatible with singularity. This means instagraal has to be installed on the host machine for the scaffolding to work.
