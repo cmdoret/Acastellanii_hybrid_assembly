@@ -52,6 +52,7 @@ rule align_ont_ont_assembly:
   singularity: "docker://cmdoret/bowtie2:2.3.4.1"
   threads: CPUS
   resources: mem=32000
+  conda: '../envs/minimap2.yaml'
   shell:
     """
     minimap2 -ax map-ont \
@@ -73,11 +74,11 @@ rule hypo_polishing:
     assembly = join(OUT, 'assemblies', '02_Ac_{strain}_hypo.fa'),
     fqlist = temporary(join(TMP, '{strain}_fq_list.txt'))
   log: join('logs', '02_hypo_polishing_{strain}.log')
-  singularity: "docker://cmdoret/pilon:1.22"
   params:
     r1 = join(TMP, "reads", "{strain}_shotgun.end1.fq.gz"),
     r2 = join(TMP, "reads", "{strain}_shotgun.end2.fq.gz")
   threads: CPUS
+  conda: "../envs/hypo.yaml"
   shell:
     """
     echo -e "{params.r1}\n{params.r2}" > {output.fqlist}

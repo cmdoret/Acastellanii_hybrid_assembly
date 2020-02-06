@@ -23,51 +23,6 @@ rule fastq_to_fasta_ONT:
     seqtk seq -a {input.r1} > {output}
     """
 
-# Split reads into two files to allow correction with reasonable resources
-N_SPLITS = 4
-split_names = [f'part_{s:03}' for s in range(1, N_SPLITS + 1)]
-
-rule split_fasta:
-  input: join(TMP, 'reads', '{strain}_long_reads.fa')
-  output: expand(join(TMP, 'split_reads', '{{strain}}_long_reads', '{{strain}}_long_reads.{split}.fa'), split=split_names)
-  message: "Split {input} into: {output}"
-  params:
-    n_splits = N_SPLITS,
-    split_dir = lambda w: join(TMP, 'split_reads', f'{w.strain}_long_reads')
-  shell:
-    """
-    mkdir -p {params.split_dir}
-    seqkit split2 -p {params.n_splits} \
-                  -w 0 \
-                  -f \
-                  -1 {input} \
-                  -O {params.split_dir}
-    """
-
-
-# Use CONSENT to correct ONT reads
-rule long_reads_correction:
-  input: join(TMP, 'split_reads', '{strain}_long_reads', '{strain}_long_reads.{split}.fa')
-  output: join(TMP, 'split_reads', '{strain}_long_reads_corrected.{split}.fa')
-  message: "Using CONSENT to orrect {input} into {output}"
-  params:
-    tmp = join(TMP, "CONSENT")
-  threads: 54
-  singularity: "docker://cmdoret/consent:latest"
-  shell:
-    """
-    CONSENT-correct --in {input} \
-                    --tmpdir {params.tmp} \
-                    --out {output} \
-                    --type ONT \
-                    --nproc {threads}
-    """
-
-rule merge_corrected:
-  input: expand(join(TMP, 'split_reads', '{{strain}}_long_reads_corrected.{split}.fa'), split=split_names)
-  output: join(TMP, 'reads', '{strain}_long_reads_corrected.fa')
-  message: "Merge CONSENT outputs: {input} into {output}"
-  shell: "cat {input} > {output}"
 
 rule filter_long_reads:
   input: 
@@ -77,6 +32,7 @@ rule filter_long_reads:
   output: temporary(join(TMP, 'reads', '{strain}_long_reads_filtered_tmp.fa'))
   params:
     keep=80
+  conda: "../envs/filtlong.yaml"
   shell: "filtlong -p {params.keep} -1 {input.ilm1} -2 {input.ilm2} {input.ont} > {output}"
 
 # Format long reads fasta into 1 read / line for CONSENT
