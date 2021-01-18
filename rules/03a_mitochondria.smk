@@ -11,7 +11,7 @@ rule split_mito_tigs:
         nucl= join(OUT, 'assemblies', '02_Ac_{strain}_hypo_nucl.fa'),
         mito = join(OUT, 'assemblies', '02_Ac_{strain}_hypo_mito.fa')
 
-    conda: '../envs/minimap2'
+    conda: "../envs/align.yaml"
     shell:
         """
         python scripts/split_mito.py \

@@ -29,6 +29,7 @@ rule align_shotgun_ont_assembly:
     bt2_index = temporary(join(TMP, "01_Ac_{strain}_flye")),
     bt2_preset = config['params']['bowtie2']
   singularity: "docker://cmdoret/bowtie2:2.3.4.1"
+  conda: "../envs/align.yaml"
   threads: CPUS
   resources: mem=32000
   shell:
@@ -52,7 +53,7 @@ rule align_ont_ont_assembly:
   singularity: "docker://cmdoret/bowtie2:2.3.4.1"
   threads: CPUS
   resources: mem=32000
-  conda: '../envs/minimap2.yaml'
+  conda: "../envs/align.yaml"
   shell:
     """
     minimap2 -ax map-ont \

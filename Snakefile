@@ -11,7 +11,7 @@ import numpy as np
 configfile: "config.yaml"
 validate(config, schema="schemas/config.schema.yaml")
 
-samples = pd.read_csv(config["samples"], sep='\t').set_index("strain", drop=False)
+samples = pd.read_csv(config["samples"], sep='\t', comment='#').set_index("strain", drop=False)
 validate(samples, schema="schemas/samples.schema.yaml")
 
 units = pd.read_csv(config["units"], sep='\t', dtype=str).set_index(["strain", "unit"], drop=False)
