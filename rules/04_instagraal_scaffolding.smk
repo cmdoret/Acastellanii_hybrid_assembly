@@ -35,7 +35,7 @@ rule instagraal_scaffolding:
   params:
     instagraal_outdir = join(TMP, 'instagraal', '{strain}_nucl')
   shell:
-    """"
+    """
     # Run instagraal
     instagraal {input.hicstuff_dir} {input.assembly} {params.instagraal_outdir}
     # Take the assembly out of instagraal output dir
