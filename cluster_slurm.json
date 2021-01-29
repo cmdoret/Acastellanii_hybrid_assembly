@@ -2,7 +2,7 @@
     "__default__" :
     {
         "queue"  : "normal",
-        "ncpus"  : 32,
+        "ncpus"  : 8,
         "mem"    : 16000,
         "ntasks" : 1,
         "time"   : 359,
@@ -26,10 +26,35 @@
         "mem": 256000,
         "ncpus": 48,
     },
-    "index_shotgun_bam_pilon":
+    "hypo_polishing":
     {
-        "mem": 8000,
-        "ncpus": 4
+        "mem": 64000,
+        "ncpus": 4,
+    },
+    "align_shotgun_ont_assembly":
+    {
+        "mem": 64000,
+        "ncpus": 12,
+    },
+    "align_ont_ont_assembly":
+        {
+            "mem": 64000,
+            "ncpus": 12,
+        },
+        "index_shotgun_bam_pilon":
+        {
+            "mem": 8000,
+            "ncpus": 4
+        },
+        "post_hic_pilon_polishing":
+        {
+            "mem": 256000,
+            "ncpus": 24,
+        },
+        "post_hic_pilon_polishing_round2":
+    {
+        "mem": 256000,
+        "ncpus": 24,
     },
     "combine_units":
     {
