@@ -31,8 +31,9 @@ rule filter_long_reads:
     ilm2 = join(TMP, 'reads', '{strain}_shotgun.end2.fq.gz')
   output: temporary(join(TMP, 'reads', '{strain}_long_reads_filtered_tmp.fa'))
   params:
-    keep=80
+    keep=60
   conda: "../envs/filtlong.yaml"
+  singularity: "docker://nanozoo/filtlong:0.2.0--0c4cbe3"
   shell: "filtlong -p {params.keep} -1 {input.ilm1} -2 {input.ilm2} {input.ont} > {output}"
 
 # Format long reads fasta into 1 read / line for CONSENT

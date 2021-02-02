@@ -11,7 +11,7 @@ rule hicstuff_hic_processing:
       idx = temporary(join(TMP, '02_Ac_{strain}_hypo_nucl')),
       enzyme = "DpnII",
       r2 = join(TMP, "reads", "{strain}_hic.end2.fq.gz"),
-    singularity: "docker://koszullab/hicstuff:v2.2.2"
+    singularity: "docker://koszullab/hicstuff:2.2.2"
     shell:
       """
       bowtie2-build {input.assembly} {params.idx}

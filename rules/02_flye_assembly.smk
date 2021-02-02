@@ -1,7 +1,7 @@
 # Use flye for de-novo long reads assembly
 rule flye_assembly:
   input: join(TMP, 'reads', '{strain}_long_reads_filtered.fa')
-  output: temporary(join(OUT, 'assemblies', '01_Ac_{strain}_flye_tmp.fa'))
+  output: join(OUT, 'assemblies', '01_Ac_{strain}_flye.fa')
   log: join('logs', '02_flye_assembly_{strain}.log')
   params:
     flye_dir = directory(join(TMP, '{strain}', 'flye'))
@@ -9,6 +9,7 @@ rule flye_assembly:
   singularity: "docker://cmdoret/flye:2.3.6"
   shell:
     """
+    mkdir -p {params.flye_dir}
     flye --nano-raw {input} \
     --threads {threads} \
     --iterations 3 \
