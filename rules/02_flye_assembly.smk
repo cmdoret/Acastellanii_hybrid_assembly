@@ -6,7 +6,8 @@ rule flye_assembly:
   params:
     flye_dir = directory(join(TMP, '{strain}', 'flye'))
   threads: CPUS
-  singularity: "docker://cmdoret/flye:2.3.6"
+  singularity: "quay.io/biocontainers/flye:2.8.2"
+  conda: "../envs/flye.yaml"
   shell:
     """
     mkdir -p {params.flye_dir}
@@ -17,5 +18,5 @@ rule flye_assembly:
     -g 45m \
     2> {log}
     
-    mv {params.flye_dir}/scaffolds.fasta {output}
+    mv {params.flye_dir}/assembly.fasta {output}
     """

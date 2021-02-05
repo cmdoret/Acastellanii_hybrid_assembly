@@ -91,5 +91,5 @@ rule hypo_polishing:
          -d {input.assembly} \
          -s $(cat {input.len}) \
          -c $(cat {input.cov}) \
-          2> {log}
+         2> {log}
     """

@@ -5,7 +5,6 @@
         "ncpus"  : 8,
         "mem"    : 16000,
         "ntasks" : 1,
-        "time"   : 359,
         "name"   : "Ac_assembly.{rule}.{wildcards}",
         "output" : "logs/cluster/{rule}.{wildcards}.out",
         "error"  : "logs/cluster/{rule}.{wildcards}.err"
@@ -19,7 +18,8 @@
     },
     "flye_assembly":
     {
-        "mem": 64000
+        "mem": 64000,
+        "ncpus": 10,
     },
     "pilon_polishing":
     {
@@ -28,7 +28,7 @@
     },
     "hypo_polishing":
     {
-        "mem": 64000,
+        "mem": 128000,
         "ncpus": 4
     },
     "align_shotgun_ont_assembly":

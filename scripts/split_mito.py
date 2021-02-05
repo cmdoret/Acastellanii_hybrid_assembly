@@ -56,8 +56,8 @@ def split_mitochondrial(genome, mitochondrion, nuclear_out, mitochondrion_out, m
     """
     Split nuclear and mitochondrial contigs into two different fasta files.
     """
-    s = mp.Aligner(genome)
-    q = mp.Aligner(mitochondrion)
+    s = mp.Aligner(genome, preset='asm5')
+    q = mp.Aligner(mitochondrion, preset='asm5')
     mito_seqs = set()
     # Align each sequence against the rest of contigs
     for query_name in q.seq_names:
