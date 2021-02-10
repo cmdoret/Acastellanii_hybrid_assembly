@@ -18,14 +18,14 @@ import sys
     "-I",
     "--min-identity",
     help="Minimum (blast-like) identity required to consider mitochondrial match",
-    default=0.51,
+    default=0.90,
     show_default=True,
 )
 @click.option(
     "-O",
     "--min-overlap",
     help="Minimum overlap required to consider mitochondrial contigs. Defined as: length(alignment) / length(c) where c is the smallest contig of the aligned pair.",
-    default=0.6,
+    default=0.3,
     show_default=True,
 )
 @click.option(
@@ -56,19 +56,19 @@ def split_mitochondrial(genome, mitochondrion, nuclear_out, mitochondrion_out, m
     """
     Split nuclear and mitochondrial contigs into two different fasta files.
     """
-    s = mp.Aligner(genome, preset='asm5')
-    q = mp.Aligner(mitochondrion, preset='asm5')
+    s = mp.Aligner(mitochondrion, preset='asm5')
+    q = mp.Aligner(genome, preset='asm5')
     mito_seqs = set()
     # Align each sequence against the rest of contigs
-    for query_name in q.seq_names:
+    for contig_name in q.seq_names:
         # Take best hit
-        hits = s.map(q.seq(query_name))
+        contig_seq = q.seq(contig_name)
+        contig_len = len(contig_seq)
+        hits = s.map(contig_seq)
         for hit in hits:
-            contig_name = hit.ctg
-            contig_len = hit.ctg_len
             # If sequence identity is good enough, we have a mito contig 
             identity = hit.mlen / hit.blen
-            overlap = hit.blen / hit.ctg_len
+            overlap = hit.blen / contig_len
             if identity >= min_identity:
                 if overlap >= min_overlap:
                     mito_seqs.add(contig_name)
