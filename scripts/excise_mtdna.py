@@ -12,6 +12,9 @@ import sys
 from os.path import basename
 from Bio import SeqIO
 
+# Whether coordinates start at 1 in the table (as opposed to 0)
+one_based = int(True)
+
 if len(sys.argv) != 3:
     print(f"usage: python {basename(__file__)} genome.fa mtDNA.tsv")
     sys.exit(1)
@@ -33,6 +36,9 @@ for scf in SeqIO.parse(sys.argv[1], 'fasta'):
     if scf.id in mtDNA:
         for ins in mtDNA[scf.id]:
             start, end = ins.split(',')
+            # Decrease coord by 1 if one based
+            start = int(start) - one_based
+            end = int(end) - one_based
             seq = seq[:int(start)] + seq[int(end):]
     print(">" + scf.id)
     print(seq)
