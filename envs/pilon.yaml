@@ -1,0 +1,8 @@
+name: pilon
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+  - r
+dependencies:
+  - pilon=1.22

@@ -49,6 +49,7 @@ rule post_hic_pilon_polishing:
     #pilon_preset = config['params']['pilon'],
     pilon_outdir = temp(join(TMP, "pilon", "04_Ac_{strain}_instagraal_polish"))
   singularity: "quay.io/biocontainers/pilon:1.22--py36_0"
+  conda: '../envs/pilon.yaml'
   threads: CPUS
   resources: mem=256000
   shell:
@@ -72,6 +73,7 @@ rule align_shotgun_3c_assembly_round2:
     bt2_index = temp(join(TMP, "05_Ac_{strain}_pilon")),
     bt2_preset = config['params']['bowtie2']
   singularity: "docker://cmdoret/bowtie2:2.3.4.1"
+  conda: '../envs/align.yaml'
   threads: CPUS
   resources: mem=32000
   shell:
@@ -91,6 +93,7 @@ rule index_shotgun_bam_pilon_3c_round2:
     bam = temporary(join(TMP, "alignments", "05_Ac_{strain}_pilon.bam")),
     bai = temporary(join(TMP, "alignments", "05_Ac_{strain}_pilon.bam.bai"))
   singularity: "docker://biocontainers/samtools:v1.7.0_cv4"
+  conda: '../envs/align.yaml'
   threads: CPUS
   shell:
     """
@@ -108,7 +111,8 @@ rule post_hic_pilon_polishing_round2:
   params:
     #pilon_preset = config['params']['pilon'],
     pilon_outdir = temp(join(TMP, "pilon", "05_Ac_{strain}_pilon"))
-  singularity: "docker://cmdoret/pilon:1.22"
+  singularity: "quay.io/biocontainers/pilon:1.22--py36_0"
+  conda: '../envs/pilon.yaml'
   threads: CPUS
   resources: mem=256000
   shell:
