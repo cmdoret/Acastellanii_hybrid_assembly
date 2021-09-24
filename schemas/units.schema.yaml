@@ -15,6 +15,9 @@ properties:
     libtype:
         type: string
         description: type of genomic library. For example Hi-C, shotgun.
+    sra:
+        type: string
+        description: library accession on NCBI's SRA database
     fq1:
         type: string
         description: path to the first FASTQ file
