@@ -50,9 +50,9 @@ rule align_ont_ont_assembly:
     ont = join(TMP, "reads", "{strain}_long_reads.end1.fq.gz"),
     assembly = join(OUT, 'assemblies', '01_Ac_{strain}_flye.fa')
   output: temporary(join(TMP, 'alignments', "ONT_vs_01_Ac_{strain}_flye.bam"))
-  singularity: "docker://cmdoret/bowtie2:2.3.4.1"
   threads: CPUS
   resources: mem=32000
+  singularity: "docker://koszullab/hicstuff:3.1.0"
   conda: "../envs/align.yaml"
   shell:
     """
