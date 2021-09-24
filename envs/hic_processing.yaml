@@ -1,0 +1,12 @@
+name: hic_processing
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - requests
+  - bowtie2=2.3.4.1
+  - samtools=1.11
+  - pip
+  - pip:
+    - hicstuff==3.1.0

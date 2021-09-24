@@ -1,7 +1,23 @@
 
 
+
+def get_fq_units(wildcards):
+    """
+    Get fastq files (units) of a particular library type of one sample 
+    from the unit sheet
+    """
+    fqs = units.loc[(units.strain == wildcards.strain) & (units.libtype == wildcards.libtype), ["fq1", "fq2"]]
+    fq1 = fqs.fq1.dropna()
+    fq2 = fqs.fq2.dropna()
+    if len(fq2) == len(fq1):
+        return {
+          "r1": list(fqs.fq1),
+          "r2": list(fqs.fq2)
+        }
+    return {"r1": list(fqs.fq1)}
+
 rule combine_units:
-  input: unpack(get_fastqs)
+  input: unpack(get_fq_units)
   output:
     r1 = join(TMP, "reads", "{strain}_{libtype}.end1.fq.gz"),
     r2 = join(TMP, "reads", "{strain}_{libtype}.end2.fq.gz")
@@ -18,6 +34,7 @@ rule fastq_to_fasta_ONT:
     r1 = join(TMP, "reads", "{strain}_long_reads.end1.fq.gz")
   output: join(TMP, 'reads', '{strain}_long_reads.fa')
   singularity: "docker://cmdoret/seqtk:1.3"
+  conda: '../envs/seqtk.yaml'
   shell:
     """
     seqtk seq -a {input.r1} > {output}
