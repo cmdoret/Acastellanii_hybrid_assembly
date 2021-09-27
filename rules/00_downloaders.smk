@@ -22,16 +22,26 @@ rule sra_dl_fq:
   threads: 12
   shell:
     """
+
+    # Download SRA file
+    prefetch --max-size 100G -p -o "./fq/{params.acc}.sra" "{params.acc}"
+    
     # Get library base name
     fq={output}
     trim=${{fq%_[12].fastq.gz}}
-    echo "SRA download to ${{trim}}_1.fastq and ${{trim}}_2.fastq"
-
-    # Download SRA file
-    prefetch -p -o "{params.acc}.sra" "{params.acc}"
     
+    # Add _1.fastq suffix if single end, otherwise, fasterq-dump adds it
+    numLines=$(fastq-dump -X 1 -Z --split-spot ./fq/{params.acc}.sra | wc -l) 
+    if [ $numLines -eq 4 ]
+    then
+      trim="${{trim}}_1.fastq"
+      echo "SRA download to ${{trim}}"
+    else
+      echo "SRA download to ${{trim}}_1.fastq and ${{trim}}_2.fastq"
+    fi
+
     # Convert to fastq locally and compress
-    fasterq-dump -e {threads} "./{params.acc}.sra" -o $trim
-    rm "{params.acc}.sra"
+    fasterq-dump -e {threads} "./fq/{params.acc}.sra" -o $trim
+    rm -f "./fq/{params.acc}.sra"
     gzip ${{trim}}*fastq
     """
