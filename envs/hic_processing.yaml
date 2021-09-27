@@ -1,6 +1,5 @@
 name: hic_processing
 channels:
-  - conda-forge
   - bioconda
   - defaults
 dependencies:

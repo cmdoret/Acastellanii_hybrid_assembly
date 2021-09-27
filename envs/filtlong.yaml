@@ -1,6 +1,5 @@
 name: filtlong
 channels:
-  - conda-forge
   - bioconda
   - defaults
   - r

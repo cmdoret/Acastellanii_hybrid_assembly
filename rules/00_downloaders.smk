@@ -24,7 +24,7 @@ rule sra_dl_fq:
     """
 
     # Download SRA file
-    prefetch --max-size 100G -p -o "./fq/{params.acc}.sra" "{params.acc}"
+    prefetch -t ./fq --max-size 100G -p -o "./fq/{params.acc}.sra" "{params.acc}"
     
     # Get library base name
     fq={output}
