@@ -19,12 +19,19 @@ rule sra_dl_fq:
     acc = lib_to_sra
   conda: '../envs/sra.yaml'
   singularity: 'quay.io/biocontainers/sra-tools:2.11.0--pl5262h314213e_0'
-  threads: 4
+  threads: 12
   shell:
     """
+    # Get library base name
     fq={output}
     trim=${{fq%_[12].fastq.gz}}
     echo "SRA download to ${{trim}}_1.fastq and ${{trim}}_2.fastq"
-    fasterq-dump -e {threads} "{params.acc}" -o $trim
+
+    # Download SRA file
+    prefetch -p -o "{params.acc}.sra" "{params.acc}"
+    
+    # Convert to fastq locally and compress
+    fasterq-dump -e {threads} "./{params.acc}.sra" -o $trim
+    rm "{params.acc}.sra"
     gzip ${{trim}}*fastq
     """
