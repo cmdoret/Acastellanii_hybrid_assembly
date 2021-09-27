@@ -12,44 +12,42 @@ The analysis is implemented by combining the snakemake workflow system with [sin
 Python packages:
 
  * snakemake >= 5.5
- * pandas
- * numpy
- * mappy
- * biopython
- * click
 
 #### Usage
 
-To run the analyses, columns `fq1` and `fq2` in `units.tsv` should be edited to match the path of fastq files on the system. Lines `out_dir` and `tmp_dir` should also be edited to match desired output paths. The pipeline can be started using:
+The pipeline can be started using:
 
 ```bash
-snakemake --use-singularity --use-conda
+snakemake --use-conda -j4
 ```
+or
 
-If your datafiles are not in the working directory, you should also bind mount the data folder. For example if input files are in `/data`:
 ```bash
-snakemake --use-conda --use-singularity --singularity-args "-B /data:/data/"
+snakemake --use-singularity -j4
 ```
-This will mount the `/data` folder of the system into a `/data` volume in the container (so that the target paths in `units.tsv` are preserved).
+to use singularity instead of conda environments.
 
 #### Pipeline steps
+
 The pipeline uses 3 types of input data:
  * shotgun Illumina reads
  * Hi-C Illumina reads
  * Oxford Nanopore long reads
 
+All those reads are automatically downloaded from SRA when running the pipeline.
+
 The initial assembly is performed with long reads only using Flye. The short reads are then used to polish this assembly using HyPo. The Hi-C scaffolding is done using instagraal, followed by instagraal-polish to fix errors introduced by instagraal.
 
 >TODO: Add quast report at the end of the pipeline
 
-Each rule requiring a third party software pulls a standalone container hosted on dockerhub to work in an isolated environment with a fixed version of the software.
+Each rule requiring a third party software pulls a standalone container hosted on dockerhub or quay to work in an isolated environment with a fixed version of the software.
 
 ![image](doc/assembly.svg)
 
 Unfortunately, instagraal requires access to a GPU with CUDA drivers. It is currently not possible to make it compatible with singularity. This means instagraal has to be installed on the host machine for the scaffolding to work.
 
 ### References
-Tools involved in this pipeline:
+Tools used in this pipeline:
  * filtlong v0.2.0: 
  * [flye](https://github.com/fenderglass/Flye/) v2.3.6: doi:10.1073/pnas.1604560113
  * [seqtk](https://github.com/lh3/seqtk) v1.3

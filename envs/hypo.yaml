@@ -1,6 +1,7 @@
 name: hypo
 channels:
   - bioconda
+  - conda-forge
   - defaults
   - r
 dependencies:
