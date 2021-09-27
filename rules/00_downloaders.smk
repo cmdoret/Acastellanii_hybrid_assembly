@@ -1,13 +1,15 @@
 # Rules for downloading data from the web
 def lib_to_sra(wildcards):
-    """
-    Get SRA accession from fq path.
-    """
-    try:
-        sra = units.sra[units.fq1.str.contains(wildcards.libname)].values[0]
-    except IndexError:
-        sra = units.sra[units.fq2.str.contains(wildcards.libname)].values[0]
-    return sra
+  """
+  Get SRA accession from fq path.
+  """
+  try:
+    mask = units.fq1.str.contains(wildcards.libname).fillna(False)
+    sra = units.sra[mask].values[0]
+  except IndexError:
+    mask = units.fq2.str.contains(wildcards.libname).fillna(False)
+    sra = units.sra[mask].values[0]
+  return sra
 
 
 rule sra_dl_fq:

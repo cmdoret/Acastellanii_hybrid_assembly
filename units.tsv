@@ -7,6 +7,6 @@ Neff	1	ILLUMINA	hic	SRR15928351	fq/Neff/hic/AT338_1.fastq.gz	fq/Neff/hic/AT338_2
 C3	2	ILLUMINA	hic	SRR15928352	fq/C3/hic/PM106_1.fastq.gz	fq/C3/hic/PM106_2.fastq.gz
 C3	4	ILLUMINA	hic	SRR15928338	fq/C3/hic/AT407_1.fastq.gz	fq/C3/hic/AT407_2.fastq.gz
 C3	5	ILLUMINA	hic	SRR15928337	fq/C3/hic/AT408_1.fastq.gz	fq/C3/hic/AT408_2.fastq.gz
-C3	1	ONT	long_reads	SRR15928344	fq/C3/long_reads/CM01.fastq.gz
-Neff	1	ONT	long_reads	SRR15928343	fq/Neff/long_reads/CM02.fastq.gz
-Neff	2	ONT	long_reads	SRR7765365	fq/Neff/long_reads/Acas_merged2_2018.04.05_pc.fastq.gz
+C3	1	ONT	long_reads	SRR15928344	fq/C3/long_reads/CM01_1.fastq.gz
+Neff	1	ONT	long_reads	SRR15928343	fq/Neff/long_reads/CM02_1.fastq.gz
+Neff	2	ONT	long_reads	SRR7765365	fq/Neff/long_reads/Acas_merged2_2018.04.05_pc_1.fastq.gz
