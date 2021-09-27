@@ -44,7 +44,7 @@ Each rule requiring a third party software pulls a standalone container hosted o
 
 ![image](doc/assembly.svg)
 
-Unfortunately, instagraal requires access to a GPU with CUDA drivers. It is currently not possible to make it compatible with singularity. This means instagraal has to be installed on the host machine for the scaffolding to work.
+Unfortunately, instagraal requires access to a GPU with CUDA drivers. It is currently not possible to make it compatible with singularity. This means instagraal has to be installed on the host machine for the scaffolding to work. It can also be run via docker by following instructions on the [official repository](https://github.com/koszullab/instaGRAAL).
 
 ### References
 Tools used in this pipeline:
