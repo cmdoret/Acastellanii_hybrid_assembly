@@ -43,7 +43,7 @@ rule sra_dl_fq:
       fi
 
       # Convert to fastq locally and compress
-      fasterq-dump -f -e {threads} "./fq/{params.acc}.sra" -o $trim
+      fasterq-dump -t ./fq -f -e {threads} "./fq/{params.acc}.sra" -o $trim
       rm -f "./fq/{params.acc}.sra"
       gzip -f ${{trim}}*fastq
     fi
