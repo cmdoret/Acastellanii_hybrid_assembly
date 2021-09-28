@@ -36,14 +36,15 @@ rule sra_dl_fq:
       numLines=$(fastq-dump -X 1 -Z --split-spot ./fq/{params.acc}.sra | wc -l) 
       if [ $numLines -eq 4 ]
       then
-        trim="${{trim}}_1.fastq"
+        fname="${{trim}}_1.fastq"
         echo "SRA download to ${{trim}}"
       else
         echo "SRA download to ${{trim}}_1.fastq and ${{trim}}_2.fastq"
+        fname="$trim"
       fi
 
       # Convert to fastq locally and compress
-      fasterq-dump -t ./fq -f -e {threads} "./fq/{params.acc}.sra" -o $trim
+      fasterq-dump -t ./fq -f -e {threads} "./fq/{params.acc}.sra" -o $fname
       rm -f "./fq/{params.acc}.sra"
       gzip -f ${{trim}}*fastq
     fi
