@@ -22,30 +22,26 @@ rule sra_dl_fq:
   threads: 12
   shell:
     """
-    # Check if output files are already present in case rule was called by other mate
-    if [ ! -f {output} ]
+    # Download SRA file
+    prefetch -t ./fq --max-size 100G -p -o "./fq/{params.acc}.sra" "{params.acc}"
+    
+    # Get library base name
+    fq={output}
+    trim=${{fq%_[12].fastq.gz}}
+    
+    # Add _1.fastq suffix if single end, otherwise, fasterq-dump adds it
+    numLines=$(fastq-dump -X 1 -Z --split-spot ./fq/{params.acc}.sra | wc -l) 
+    if [ $numLines -eq 4 ]
     then
-      # Download SRA file
-      prefetch -t ./fq --max-size 100G -p -o "./fq/{params.acc}.sra" "{params.acc}"
-      
-      # Get library base name
-      fq={output}
-      trim=${{fq%_[12].fastq.gz}}
-      
-      # Add _1.fastq suffix if single end, otherwise, fasterq-dump adds it
-      numLines=$(fastq-dump -X 1 -Z --split-spot ./fq/{params.acc}.sra | wc -l) 
-      if [ $numLines -eq 4 ]
-      then
-        fname="${{trim}}_1.fastq"
-        echo "SRA download to ${{trim}}"
-      else
-        echo "SRA download to ${{trim}}_1.fastq and ${{trim}}_2.fastq"
-        fname="$trim"
-      fi
-
-      # Convert to fastq locally and compress
-      fasterq-dump -p -t ./fq -f -e {threads} "./fq/{params.acc}.sra" -o $fname
-      rm -f "./fq/{params.acc}.sra"
-      gzip -f ${{trim}}*fastq
+      fname="${{trim}}_1.fastq"
+      echo "SRA download to ${{trim}}"
+    else
+      echo "SRA download to ${{trim}}_1.fastq and ${{trim}}_2.fastq"
+      fname="$trim"
     fi
+
+    # Convert to fastq locally and compress
+    fasterq-dump -p -t ./fq -f -e {threads} "./fq/{params.acc}.sra" -o $fname
+    rm -f "./fq/{params.acc}.sra"
+    gzip -f ${{trim}}*fastq
     """
