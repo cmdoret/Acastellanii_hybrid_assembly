@@ -1,8 +1,8 @@
-name: filtlong
+name: pilon
 channels:
+  - conda-forge
   - bioconda
   - defaults
   - r
 dependencies:
-  - filtlong=0.2.0
-
+  - pilon=1.22

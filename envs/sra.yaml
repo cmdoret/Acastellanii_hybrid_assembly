@@ -1,8 +1,7 @@
-name: filtlong
+name: sra
 channels:
+  - conda-forge
   - bioconda
   - defaults
-  - r
 dependencies:
-  - filtlong=0.2.0
-
+  - sra-tools=2.11.0

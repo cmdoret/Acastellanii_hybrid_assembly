@@ -1,8 +1,8 @@
-name: filtlong
+name: seqtk
 channels:
+  - conda-forge
   - bioconda
   - defaults
   - r
 dependencies:
-  - filtlong=0.2.0
-
+  - seqtk=1.3=h5bf99c6_3

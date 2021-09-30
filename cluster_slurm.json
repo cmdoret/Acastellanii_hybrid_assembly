@@ -1,71 +1,58 @@
 {
-    "__default__" :
-    {
-        "queue"  : "normal",
-        "ncpus"  : 8,
-        "mem"    : 16000,
-        "ntasks" : 1,
-        "name"   : "Ac_assembly.{rule}.{wildcards}",
-        "output" : "logs/cluster/{rule}.{wildcards}.out",
-        "error"  : "logs/cluster/{rule}.{wildcards}.err"
+    "__default__": {
+        "queue": "normal",
+        "ncpus": 8,
+        "mem": 16000,
+        "ntasks": 1,
+        "name": "Ac_assembly.{rule}.{wildcards}",
+        "output": "logs/cluster/{rule}.{wildcards}.out",
+        "error": "logs/cluster/{rule}.{wildcards}.err"
     },
-
-    "long_reads_correction":
-    {
+    "long_reads_correction": {
         "mem": 256000,
         "ncpus": 5,
         "queue": "long"
     },
-    "flye_assembly":
-    {
+    "flye_assembly": {
         "mem": 64000,
-        "ncpus": 10,
+        "ncpus": 10
     },
-    "pilon_polishing":
-    {
+    "pilon_polishing": {
         "mem": 256000,
         "ncpus": 48
     },
-    "hypo_polishing":
-    {
+    "hypo_polishing": {
         "mem": 128000,
         "ncpus": 4
     },
-    "align_shotgun_ont_assembly":
-    {
+    "align_shotgun_ont_assembly": {
         "mem": 64000,
         "ncpus": 12
     },
-    "align_ont_ont_assembly":
-        {
-            "mem": 64000,
-            "ncpus": 12
-        },
-        "index_shotgun_bam_pilon":
-        {
-            "mem": 8000,
-            "ncpus": 4
-        },
-        "post_hic_pilon_polishing":
-        {
-            "mem": 256000,
-            "ncpus": 24
-        },
-        "post_hic_pilon_polishing_round2":
-    {
+    "align_ont_ont_assembly": {
+        "mem": 64000,
+        "ncpus": 12
+    },
+    "index_shotgun_bam_pilon": {
+        "mem": 8000,
+        "ncpus": 4
+    },
+    "post_hic_pilon_polishing": {
         "mem": 256000,
         "ncpus": 24
     },
-    "combine_units":
-    {
+    "post_hic_pilon_polishing_round2": {
+        "mem": 256000,
+        "ncpus": 24
+    },
+    "combine_units": {
         "mem": 8000,
         "ncpus": 4,
-        "queue"  : "normal"
+        "queue": "normal"
     },
-    "filter_long_reads":
-    {
+    "filter_long_reads": {
         "mem": 64000,
         "ncpus": 4,
-        "queue"  : "normal"
+        "queue": "normal"
     }
 }

@@ -11,7 +11,8 @@ rule hicstuff_hic_processing:
       idx = temporary(join(TMP, '02_Ac_{strain}_hypo_nucl')),
       enzyme = "DpnII",
       r2 = join(TMP, "reads", "{strain}_hic.end2.fq.gz"),
-    singularity: "docker://koszullab/hicstuff:2.2.2"
+    singularity: "docker://koszullab/hicstuff:3.1.0"
+    conda: "../envs/hic_processing.yaml"
     shell:
       """
       bowtie2-build {input.assembly} {params.idx}
@@ -34,6 +35,7 @@ rule instagraal_scaffolding:
     frags = join(TMP, 'info_frags_{strain}.txt')
   params:
     instagraal_outdir = join(TMP, 'instagraal', '{strain}_nucl')
+  singularity: "docker://koszullab/instagraal:latest"
   shell:
     """
     # Run instagraal
@@ -50,6 +52,7 @@ rule instagraal_polish:
     fasta = join(OUT, 'assemblies', '02_Ac_{strain}_hypo_nucl.fa'),
     frags = join(TMP, 'info_frags_{strain}.txt')
   output: join(OUT, 'assemblies', '04_Ac_{strain}_instagraal_polish_nucl.fa')
+  singularity: "docker://koszullab/instagraal:latest"
   shell: "instagraal-polish -m polishing -i {input.frags} -f {input.fasta} -o {output}"
 
 

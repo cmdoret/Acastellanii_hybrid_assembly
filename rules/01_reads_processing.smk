@@ -1,16 +1,45 @@
+from typing import List, Literal
+
+def get_fq_units(wildcards, end: Literal[1, 2]=1) -> List[str]:
+    """
+    Get fastq files (units) of a particular library type of one sample 
+    from the unit sheet
+    """
+    fqs = units.loc[
+      (units.strain == wildcards.strain) &
+      (units.libtype == wildcards.libtype),
+      f"fq{end}"
+    ].dropna()
+    return list(fqs)
 
 
+# Combine all fastq files from the same sample / library type combination
+# If there is a single fastq, symlink it to spare memory
 rule combine_units:
-  input: unpack(get_fastqs)
+  input: lambda w: get_fq_units(w, 1)
+  params:
+    r2 = lambda w: get_fq_units(w, 2)
+  message:
+    """
+    Merging :
+      {input} into:  {output.r1}
+      {params.r2} into:  {output.r2}
+    """
   output:
     r1 = join(TMP, "reads", "{strain}_{libtype}.end1.fq.gz"),
     r2 = join(TMP, "reads", "{strain}_{libtype}.end2.fq.gz")
+  threads: 1
   run:
-    shell("cat {i1} > {o1}".format(i1=input['r1'], o1=output['r1']))
-    if len(input.keys()) == 2:
-      shell("cat {i2} > {o2}".format(i2=input['r2'], o2=output['r2']))
+    if len(input[:]) > 1:
+      shell(f"cat {' '.join(input[:])} > {output['r1']}")
+      if len(params['r2']):
+        shell(f"cat {' '.join(params['r2'])} > {output['r2']}")
     else:
-        shell("touch {o2}".format(o2=output['r2']))
+      shell(f"ln -s {input[0]} {output['r1']}")
+      if len(params['r2']):
+        shell(f"ln -s {params['r2'][0]} {output['r2']}")
+
+
 
 # convert fastq reads to fasta for correction
 rule fastq_to_fasta_ONT:
@@ -18,6 +47,7 @@ rule fastq_to_fasta_ONT:
     r1 = join(TMP, "reads", "{strain}_long_reads.end1.fq.gz")
   output: join(TMP, 'reads', '{strain}_long_reads.fa')
   singularity: "docker://cmdoret/seqtk:1.3"
+  conda: '../envs/seqtk.yaml'
   shell:
     """
     seqtk seq -a {input.r1} > {output}

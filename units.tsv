@@ -1,13 +1,12 @@
-strain	unit	platform	libtype	fq1	fq2
-C3	1	ILLUMINA	shotgun	fq/C3/shotgun/PM65.end1.fq.gz	fq/C3/shotgun/PM65.end2.fq.gz
-Neff	1	ILLUMINA	shotgun	fq/Neff/shotgun/AT463.end1.fq.gz	fq/Neff/shotgun/AT463.end2.fq.gz
-Neff	2	ILLUMINA	shotgun	fq/Neff/shotgun/Acas_gDNA_Illumina_R1_PairNtrim.fq.gz	fq/Neff/shotgun/Acas_gDNA_Illumina_R2_PairNtrim.fq.gz
-C3	1	ILLUMINA	hic	fq/C3/hic/AT337.end1.fq.gz	fq/C3/hic/AT337.end2.fq.gz
-Neff	1	ILLUMINA	hic	fq/Neff/hic/AT338.end1.fq.gz	fq/Neff/hic/AT338.end2.fq.gz
-C3	2	ILLUMINA	hic	fq/C3/hic/PM106.end1.fq.gz	fq/C3/hic/PM106.end2.fq.gz
-C3	3	ILLUMINA	hic	fq/C3/hic/PM106_reseq.end1.fq.gz	fq/C3/hic/PM106_reseq.end2.fq.gz
-C3	4	ILLUMINA	hic	fq/C3/hic/AT407.end1.fq.gz	fq/C3/hic/AT407.end2.fq.gz
-C3	5	ILLUMINA	hic	fq/C3/hic/AT408.end1.fq.gz	fq/C3/hic/AT408.end2.fq.gz
-C3	1	ONT	long_reads	fq/C3/ONT/CM01.fq.gz
-Neff	1	ONT	long_reads	fq/Neff/ONT/CM02.fq.gz
-Neff	2	ONT	long_reads	fq/Neff/ONT/Acas_merged2_2018.04.05_pc.fastq.gz
+strain	unit	platform	libtype	sra	fq1	fq2
+C3	1	ILLUMINA	shotgun	SRR15928355	fq/C3/shotgun/PM65_1.fastq.gz	fq/C3/shotgun/PM65_2.fastq.gz
+Neff	1	ILLUMINA	shotgun	SRR15928354	fq/Neff/shotgun/AT463_1.fastq.gz	fq/Neff/shotgun/AT463_2.fastq.gz
+Neff	2	ILLUMINA	shotgun	SRR7769837	fq/Neff/shotgun/Acas_gDNA_Illumina_PairNtrim_1.fastq.gz	fq/Neff/shotgun/Acas_gDNA_Illumina_PairNtrim_2.fastq.gz
+C3	1	ILLUMINA	hic	SRR15928353	fq/C3/hic/AT337_1.fastq.gz	fq/C3/hic/AT337_2.fastq.gz
+Neff	1	ILLUMINA	hic	SRR15928351	fq/Neff/hic/AT338_1.fastq.gz	fq/Neff/hic/AT338_2.fastq.gz
+C3	2	ILLUMINA	hic	SRR15928352	fq/C3/hic/PM106_1.fastq.gz	fq/C3/hic/PM106_2.fastq.gz
+C3	4	ILLUMINA	hic	SRR15928338	fq/C3/hic/AT407_1.fastq.gz	fq/C3/hic/AT407_2.fastq.gz
+C3	5	ILLUMINA	hic	SRR15928337	fq/C3/hic/AT408_1.fastq.gz	fq/C3/hic/AT408_2.fastq.gz
+C3	1	ONT	long_reads	SRR15928344	fq/C3/long_reads/CM01_1.fastq.gz
+Neff	1	ONT	long_reads	SRR15928343	fq/Neff/long_reads/CM02_1.fastq.gz
+Neff	2	ONT	long_reads	SRR7765365	fq/Neff/long_reads/Acas_merged2_2018.04.05_pc_1.fastq.gz
