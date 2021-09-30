@@ -57,7 +57,7 @@ rule sra_to_fq:
     # Convert to fastq locally and compress
     mkdir -p "{params.tmp}/fq" # Workaround weird fasterq-dump deleting outdir content
     fasterq-dump -t {params.tmp} -f -e {threads} {input} -o "{params.tmp}/fq/$(basename $fname)"
-    mv "{params.tmp}/fq/*fastq" "$(dirname {output})/"
+    mv {params.tmp}/fq/*fastq "$(dirname {output})/"
     echo "Compress ${{trim}}*fastq"
     gzip -f ${{trim}}*fastq
     """
