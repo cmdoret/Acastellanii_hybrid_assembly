@@ -1,9 +1,9 @@
-from typing import List, Literal
+from typing import List
 
-def get_fq_units(wildcards, end: Literal[1, 2]=1) -> List[str]:
+def get_fq_units(wildcards, end: int=1) -> List[str]:
     """
-    Get fastq files (units) of a particular library type of one sample 
-    from the unit sheet
+    Get fastq files (units) of a particular library type of one sample
+    from the unit sheet. end can be 1 or 2 (i.e. forward or reverse).
     """
     fqs = units.loc[
       (units.strain == wildcards.strain) &
