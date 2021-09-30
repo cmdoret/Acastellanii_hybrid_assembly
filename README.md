@@ -1,7 +1,14 @@
 ### Acanthamoeba castellanii Hybrid assembly pipeline
 
+
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5541742.svg)](https://doi.org/10.5281/zenodo.5541742)
+
+
+
 This repository contains an automatic and pipeline for the genome assembly of Acanthamoeba castellanii. The different steps of the pipeline are illustrated below.
-The analysis is implemented by combining the snakemake workflow system with [singularity containers](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#singularity) and conda environments.
+The analysis is implemented by combining the snakemake workflow system with [singularity containers](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#singularity) and conda environments. Each pipeline step is encapsulated and dependencies are managed automatically.
+All input reads are downloaded automatically from SRA, based on their accession numbers defined in `units.tsv`. A frozen copy of this repository and its output files are available on the associated [Zenodo record](https://doi.org/10.5281/zenodo.5507417).
 
 #### Dependencies
 
@@ -42,7 +49,9 @@ The initial assembly is performed with long reads only using Flye. The short rea
 
 Each rule requiring a third party software pulls a standalone container hosted on dockerhub or quay to work in an isolated environment with a fixed version of the software.
 
-![image](doc/assembly.svg)
+![image](doc/rulegraph.svg)
+
+[detailed version](doc/filegraph.svg)
 
 Unfortunately, instagraal requires access to a GPU with CUDA drivers. It is currently not possible to make it compatible with singularity. This means instagraal has to be installed on the host machine for the scaffolding to work. It can also be run via docker by following instructions on the [official repository](https://github.com/koszullab/instaGRAAL).
 
