@@ -34,12 +34,14 @@ rule combine_units:
       shell(f"cat {' '.join(input[:])} > {output['r1']}")
       if len(params['r2']):
         shell(f"cat {' '.join(params['r2'])} > {output['r2']}")
+      else:
+        shell(f"touch {output['r2']}")
     else:
-      shell(f"ln -s {input[0]} {output['r1']}")
+      shell(f"ln -s $PWD/{input[0]} {output['r1']}")
       if len(params['r2']):
-        shell(f"ln -s {params['r2'][0]} {output['r2']}")
-
-
+        shell(f"ln -s $PWD/{params['r2'][0]} {output['r2']}")
+      else:
+        shell(f"touch {output['r2']}")
 
 # convert fastq reads to fasta for correction
 rule fastq_to_fasta_ONT:
